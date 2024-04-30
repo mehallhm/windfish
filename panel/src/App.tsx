@@ -1,25 +1,29 @@
 import type { Component } from 'solid-js';
+import { Show, Switch, Match, createResource } from "solid-js";
 
-import logo from './logo.svg';
 import styles from './App.module.css';
 
+const fetchStacks = async () => {
+  const response = await fetch("http://localhost:3000/api/stacks/stacks")
+  return response.text()
+}
+
 const App: Component = () => {
+  const [stacks] = createResource(fetchStacks)
+
   return (
     <div class={styles.App}>
-      <header class={styles.header}>
-        <img src={logo} class={styles.logo} alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          class={styles.link}
-          href="https://github.com/solidjs/solid"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn Solid
-        </a>
-      </header>
+      <Show when={stacks.loading}>
+        <p>Loading...</p>
+      </Show>
+      <Switch>
+        <Match when={stacks.error}>
+          <span>Error: {stacks.error}</span>
+        </Match>
+        <Match when={stacks()}>
+          <div>{stacks()}</div>
+        </Match>
+      </Switch>
     </div>
   );
 };
