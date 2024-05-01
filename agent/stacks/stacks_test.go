@@ -1,4 +1,4 @@
-package router
+package stacks
 
 import (
 	"reflect"
@@ -6,7 +6,7 @@ import (
 )
 
 func TestReadStacks(t *testing.T) {
-	stacks, err := readStacks("../../test-stacks/")
+	stacks, err := ReadStacks("../../test-stacks/")
 	if err != nil {
 		t.Error(err)
 	}
