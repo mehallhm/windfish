@@ -13,15 +13,14 @@ import (
 	"github.com/docker/docker/client"
 )
 
-type parsedContainer struct {
+type ParsedContainer struct {
 	project    string
 	state      string
 	containers *[]moby.Container
 }
 
-// ReadStacks reads all stacks present in the given directory. This will reference both the compose directories
-// and the present docker stacks
-func ReadStacks(path string, cli *client.Client) ([]parsedContainer, error) {
+// ReadStacks reads all stacks present in the given directory. This will reference both the compose directories and the present docker stacks
+func ReadStacks(path string, cli *client.Client) ([]ParsedContainer, error) {
 	onDisk, err := readStacksFromDisk(path)
 	if err != nil {
 		return nil, err
@@ -32,12 +31,12 @@ func ReadStacks(path string, cli *client.Client) ([]parsedContainer, error) {
 		return nil, err
 	}
 
-	projects := make([]parsedContainer, 0)
+	projects := make([]ParsedContainer, 0)
 
 	for _, p := range onDisk {
 		dStack, ok := groupedProjects[p]
 		if !ok {
-			projects = append(projects, parsedContainer{
+			projects = append(projects, ParsedContainer{
 				project: p,
 				state:   "inactive",
 			})
@@ -45,7 +44,7 @@ func ReadStacks(path string, cli *client.Client) ([]parsedContainer, error) {
 		}
 
 		status := combinedStatus(containerToState(dStack))
-		projects = append(projects, parsedContainer{
+		projects = append(projects, ParsedContainer{
 			project:    p,
 			state:      status,
 			containers: &dStack,
@@ -53,37 +52,6 @@ func ReadStacks(path string, cli *client.Client) ([]parsedContainer, error) {
 	}
 
 	return projects, err
-}
-
-func containerToState(containers []moby.Container) []string {
-	statuses := []string{}
-	for _, c := range containers {
-		statuses = append(statuses, c.State)
-	}
-	return statuses
-}
-
-func combinedStatus(statuses []string) string {
-	nbByStatus := map[string]int{}
-	keys := []string{}
-	for _, status := range statuses {
-		nb, ok := nbByStatus[status]
-		if !ok {
-			nb = 0
-			keys = append(keys, status)
-		}
-		nbByStatus[status] = nb + 1
-	}
-	sort.Strings(keys)
-	result := ""
-	for _, status := range keys {
-		nb := nbByStatus[status]
-		if result != "" {
-			result += ", "
-		}
-		result += fmt.Sprintf("%s(%d)", status, nb)
-	}
-	return result
 }
 
 // readDockerStacks reads the current stacks from docker in order to retrieve each stack's status
@@ -143,18 +111,33 @@ func readStacksFromDisk(path string) ([]string, error) {
 	return stacks, nil
 }
 
-func createNewStack(path string, name string, compose []byte) error {
-	stackpath := filepath.Join(path, name)
-	err := os.Mkdir(stackpath, 0755)
-	if err != nil {
-		return err
+func containerToState(containers []moby.Container) []string {
+	statuses := []string{}
+	for _, c := range containers {
+		statuses = append(statuses, c.State)
 	}
+	return statuses
+}
 
-	filepath := filepath.Join(stackpath, "compose.yaml")
-	err = os.WriteFile(filepath, compose, 0644)
-	if err != nil {
-		return err
+func combinedStatus(statuses []string) string {
+	nbByStatus := map[string]int{}
+	keys := []string{}
+	for _, status := range statuses {
+		nb, ok := nbByStatus[status]
+		if !ok {
+			nb = 0
+			keys = append(keys, status)
+		}
+		nbByStatus[status] = nb + 1
 	}
-
-	return nil
+	sort.Strings(keys)
+	result := ""
+	for _, status := range keys {
+		nb := nbByStatus[status]
+		if result != "" {
+			result += ", "
+		}
+		result += fmt.Sprintf("%s(%d)", status, nb)
+	}
+	return result
 }
