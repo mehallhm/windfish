@@ -19,7 +19,7 @@ func TestStart(t *testing.T) {
 	}
 
 	// err := Start("busy-box", testPath)
-	err := streamingComposeCommand(ctx, project, testPath, streamer, "docker", "compose", "up", "-d")
+	err := streamingComposeCommand(ctx, project, testPath, streamer, "up", "-d")
 	if err != nil {
 		t.Error(err)
 	}
@@ -45,7 +45,7 @@ func TestStart(t *testing.T) {
 	}
 
 	// err = Stop("busy-box", testPath)
-	err = streamingComposeCommand(ctx, project, testPath, streamer, "docker", "compose", "down")
+	err = streamingComposeCommand(ctx, project, testPath, streamer, "down")
 	if err != nil {
 		t.Error(err)
 	}
