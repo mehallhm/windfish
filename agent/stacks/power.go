@@ -7,7 +7,20 @@ import (
 	"io"
 	"os/exec"
 	"path/filepath"
+
+	"github.com/gofiber/contrib/websocket"
 )
+
+func NativeStart(s *websocket.Conn, project string, path string) error {
+	ctx := context.TODO()
+	streamer := func(m []byte) error {
+		err := s.WriteMessage(1, m)
+		return err
+	}
+
+	err := streamingComposeCommand(ctx, project, path, streamer, "docker", "compose", "up", "-d")
+	return err
+}
 
 func Start(name string, path string) error {
 	cmd := exec.Command("docker", "compose", "up", "-d")
@@ -18,7 +31,7 @@ func Start(name string, path string) error {
 	}
 
 	go func(p io.ReadCloser) {
-		reader := bufio.NewReader(pipe)
+		reader := bufio.NewReader(p)
 		line, err := reader.ReadString('\n')
 		for err == nil {
 			fmt.Print(line)
@@ -42,7 +55,7 @@ func Stop(name string, path string) error {
 	}
 
 	go func(p io.ReadCloser) {
-		reader := bufio.NewReader(pipe)
+		reader := bufio.NewReader(p)
 		line, err := reader.ReadString('\n')
 		for err == nil {
 			fmt.Print(line)
@@ -57,25 +70,28 @@ func Stop(name string, path string) error {
 	return nil
 }
 
-func composeCommand(ctx context.Context, project string, path string, name string, args ...string) (error, error) {
+func streamingComposeCommand(ctx context.Context, project string, path string, s func(m []byte) error, name string, args ...string) error {
 	cmd := exec.CommandContext(ctx, name, args...)
 	cmd.Dir = filepath.Join(path, project)
 	pipe, _ := cmd.StderrPipe()
 
 	if err := cmd.Start(); err != nil {
-		return nil, err
+		return err
 	}
 
 	scanner := bufio.NewScanner(pipe)
 	scanner.Split(bufio.ScanLines)
 	for scanner.Scan() {
 		m := scanner.Text()
-		fmt.Println(m)
+		err := s([]byte(m))
+		if err != nil {
+			return err
+		}
 	}
 
 	if err := cmd.Wait(); err != nil {
-		return nil, err
+		return err
 	}
 
-	return nil, nil
+	return nil
 }

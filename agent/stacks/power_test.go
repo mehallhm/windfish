@@ -2,6 +2,7 @@ package stacks
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/docker/docker/client"
@@ -12,8 +13,13 @@ var testPath string = "/Users/micha/Source/panamax/test-stacks/"
 func TestStart(t *testing.T) {
 	ctx := context.Background()
 	project := "busy-box"
+	streamer := func(m []byte) error {
+		fmt.Print(m)
+		return nil
+	}
+
 	// err := Start("busy-box", testPath)
-	_, err := composeCommand(ctx, project, testPath, "docker", "compose", "up", "-d")
+	err := streamingComposeCommand(ctx, project, testPath, streamer, "docker", "compose", "up", "-d")
 	if err != nil {
 		t.Error(err)
 	}
@@ -38,7 +44,8 @@ func TestStart(t *testing.T) {
 		t.FailNow()
 	}
 
-	err = Stop("busy-box", testPath)
+	// err = Stop("busy-box", testPath)
+	err = streamingComposeCommand(ctx, project, testPath, streamer, "docker", "compose", "down")
 	if err != nil {
 		t.Error(err)
 	}
