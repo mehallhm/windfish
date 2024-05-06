@@ -19,6 +19,10 @@ func main() {
 
 	app := router.Setup(stacksPath)
 	app = router.Register(app, cli)
+	app = router.RegisterWebsockets(app, cli)
 
-	app.Listen(":3000")
+	err = app.Listen(":3000")
+	if err != nil {
+		panic(err)
+	}
 }

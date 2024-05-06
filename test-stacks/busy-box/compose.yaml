@@ -2,3 +2,6 @@ services:
   busybox:
     image: busybox
     command: sh -c "while true; do echo 'Hello, BusyBox!'; sleep 1; done"
+  busybox-2:
+    image: busybox
+    command: sh -c "while true; do echo 'Hello, BusyBox!'; sleep 1; done"

@@ -14,9 +14,9 @@ import (
 )
 
 type ParsedContainer struct {
-	project    string
-	state      string
-	containers *[]moby.Container
+	Project    string            `json:"project"`
+	State      string            `json:"state"`
+	Containers *[]moby.Container `json:"containers"`
 }
 
 // ReadStacks reads all stacks present in the given directory. This will reference both the compose directories and the present docker stacks
@@ -37,21 +37,31 @@ func ReadStacks(path string, cli *client.Client) ([]ParsedContainer, error) {
 		dStack, ok := groupedProjects[p]
 		if !ok {
 			projects = append(projects, ParsedContainer{
-				project: p,
-				state:   "inactive",
+				Project: p,
+				State:   "inactive",
 			})
 			continue
 		}
 
 		status := combinedStatus(containerToState(dStack))
 		projects = append(projects, ParsedContainer{
-			project:    p,
-			state:      status,
-			containers: &dStack,
+			Project:    p,
+			State:      status,
+			Containers: &dStack,
 		})
 	}
 
 	return projects, err
+}
+
+func ReadComposeFile(project string, path string) (string, error) {
+	fp := filepath.Join(path, project, "compose.yaml")
+	file, err := os.ReadFile(fp)
+	if err != nil {
+		return "", err
+	}
+
+	return string(file), nil
 }
 
 // readDockerStacks reads the current stacks from docker in order to retrieve each stack's status

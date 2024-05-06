@@ -2,7 +2,6 @@ package stacks
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/docker/docker/client"
@@ -14,7 +13,7 @@ func TestStart(t *testing.T) {
 	ctx := context.Background()
 	project := "busy-box"
 	streamer := func(m []byte) error {
-		fmt.Print(m)
+		// fmt.Print(m)
 		return nil
 	}
 
@@ -36,7 +35,7 @@ func TestStart(t *testing.T) {
 
 	var found = false
 	for _, s := range stacks {
-		if s.project == "busy-box" {
+		if s.Project == "busy-box" {
 			found = true
 		}
 	}
