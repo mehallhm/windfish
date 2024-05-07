@@ -38,7 +38,7 @@ async function start(
   term: Accessor<Array<string>>,
   setTerm: Setter<Array<string>>,
 ) {
-  const ws = createWS("ws://localhost:3000/ws/terminal/" + project);
+  const ws = new WebSocket("ws://localhost:3000/ws/terminal/" + project);
   ws.onmessage = (e) => {
     setTerm([...term(), e.data]);
   };
