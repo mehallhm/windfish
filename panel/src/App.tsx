@@ -1,6 +1,10 @@
-import type { Component } from "solid-js";
+import type { Component, JSX } from "solid-js";
 
-const App: Component = (props) => {
+interface AppProps {
+  children: JSX.Element;
+}
+
+const App: Component<AppProps> = (props: AppProps) => {
   return <div>{props.children}</div>;
 };
 

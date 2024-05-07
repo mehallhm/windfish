@@ -13,6 +13,7 @@ import {
 } from "solid-js";
 import { createWS } from "@solid-primitives/websocket";
 import { MonacoEditor } from "solid-monaco";
+import { Tab, Tabs } from "../components/Tabs";
 
 async function getCompose(project: string) {
   const res = await fetch(
@@ -47,6 +48,7 @@ async function start(
 export default function Page() {
   const params = useParams();
   const [term, setTerm] = createSignal<Array<string>>([]);
+  const [editMode, setEditMode] = createSignal(false);
   const [compose, { mutate, refetch }] = createResource(
     params.project,
     getCompose,
@@ -62,32 +64,88 @@ export default function Page() {
           <span>Error: {compose.error}</span>
         </Match>
         <Match when={compose()}>
-          <div class="w-full h-96">
-            <div class="flex gap-2 border p-4">
+          <div class="w-full p-8 space-y-4">
+            <h2 class="text-primary text-2xl">{params.project}</h2>
+            <div class="join">
               <button
-                class="bg-gray-200 p-2"
-                onClick={() => writeCompose(params.project, compose())}
+                class="btn join-item btn-neutral"
+                onClick={() => {
+                  setEditMode(true);
+                }}
               >
-                Submit
-              </button>
-              <button class="bg-red-200 p-2" onClick={() => refetch()}>
-                Refetch
+                Edit
               </button>
               <button
-                class="bg-green-200 p-2"
+                class="btn join-item"
                 onClick={() => start(params.project!, term, setTerm)}
               >
                 Start
               </button>
+              <button class="btn join-item">Restart</button>
+              <button class="btn join-item">Update</button>
+              <button class="btn join-item">Stop</button>
             </div>
-            <div class="bg-gray-800 h-48 overflow-scroll w-full mb-4">
-              <For each={term()}>{(t) => <li class="text-white">{t}</li>}</For>
-            </div>
-            <MonacoEditor
-              language="yaml"
-              value={compose()}
-              onChange={(e) => mutate(e)}
-            />
+            <button class="btn join-item btn-error mx-4">Delete</button>
+            <Tabs>
+              <Tab title="Home">
+                <p>Nothing here yet</p>
+              </Tab>
+              <Tab title="Services">
+                <p>Nothing here yet</p>
+              </Tab>
+              <Tab title="Compose">
+                <div class="join">
+                  <Switch>
+                    <Match when={editMode()}>
+                      <button
+                        class="btn join-item btn-success"
+                        onClick={() => {
+                          writeCompose(params.project, compose());
+                          setEditMode(false);
+                        }}
+                      >
+                        Save
+                      </button>
+                      <button
+                        class="btn join-item btn-error"
+                        onClick={() => {
+                          setEditMode(!editMode());
+                          refetch();
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </Match>
+                    <Match when={!editMode()}>
+                      <button
+                        class="btn join-item"
+                        onClick={() => setEditMode(true)}
+                      >
+                        Edit
+                      </button>
+                    </Match>
+                  </Switch>
+                </div>
+                <div class="h-96">
+                  <MonacoEditor
+                    language="yaml"
+                    value={compose()}
+                    options={{
+                      theme: "vs-dark",
+                      readOnly: !editMode(),
+                    }}
+                    onChange={(e) => mutate(e)}
+                  />
+                </div>
+              </Tab>
+              <Tab title="Logs">
+                <div class="bg-slate-950 h-96 overflow-scroll w-full mb-4 rounded">
+                  <For each={term()}>
+                    {(t) => <li class="text-white">{t}</li>}
+                  </For>
+                </div>
+              </Tab>
+            </Tabs>
           </div>
         </Match>
       </Switch>
