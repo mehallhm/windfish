@@ -23,7 +23,6 @@
     "@solid-primitives/websocket": "^1.2.2",
     "@solidjs/router": "^0.13.3",
     "solid-js": "^1.8.17",
-    "solid-monaco": "^0.2.0",
-    "yaml": "^2.4.2"
+    "solid-monaco": "^0.2.0"
   }
 }

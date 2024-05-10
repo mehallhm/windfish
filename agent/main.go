@@ -10,7 +10,7 @@ import (
 const stacksPath = "/Users/micha/Source/panamax/test-stacks/"
 
 func main() {
-	fmt.Printf("Running")
+	fmt.Println("🚀 started")
 
 	cli, err := client.NewClientWithOpts(client.WithHostFromEnv())
 	if err != nil {

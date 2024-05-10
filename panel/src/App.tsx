@@ -51,17 +51,17 @@ const App: Component<AppProps> = (props: AppProps) => {
               <span>Error: {stacks.error}</span>
             </Match>
             <Match when={stacks()}>
-              <div class="space-y-2">
+              <div class="space-y-4">
                 <For each={stacks()} fallback={<div>No items</div>}>
                   {(item, index) => (
                     <A
                       data-index={index()}
-                      class="flex rounded hover:bg-neutral hover:text-neutral-content p-2"
+                      class="flex flex-col rounded hover:bg-neutral hover:text-neutral-content p-2"
                       href={"/" + item.project}
                       activeClass="bg-primary text-primary-content"
                     >
                       <p class="text-lg">{item.project}</p>
-                      {/* <p class="">{item.state}</p> */}
+                      <p class="">{item.state}</p>
                     </A>
                   )}
                 </For>

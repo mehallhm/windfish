@@ -99,5 +99,24 @@ func Register(app *fiber.App, client *client.Client) *fiber.App {
 		return c.SendString("")
 	})
 
+	stks.Get(":project/services", func(c *fiber.Ctx) error {
+		path := fmt.Sprintf("%s", c.Locals("stacks-path"))
+		project := c.Params("project")
+
+		services, err := stacks.GetStackContainers(client, project, path)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(services)
+
+		j, err := json.Marshal(services)
+		if err != nil {
+			return err
+		}
+
+		return c.SendString(string(j))
+	})
+
 	return app
 }

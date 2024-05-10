@@ -1,31 +1,11 @@
-import YAML from "yaml";
-import {
-  createResource,
-  Switch,
-  Match,
-  Show,
-  createSignal,
-  For,
-} from "solid-js";
+import { createResource, Show, For } from "solid-js";
 
 async function getCompose(project: string) {
   const res = await fetch(
-    import.meta.env.VITE_SERVER_URL + "/api/stacks/" + project + "/compose",
+    import.meta.env.VITE_SERVER_URL + "/api/stacks/" + project + "/services",
   );
-  const j = await res.json();
-  console.log(j);
-  const y = YAML.parse(j.compose);
 
-  return convertObjectToArray(y.services);
-}
-
-function convertObjectToArray(parentObject: {
-  [key: string]: any;
-}): { [key: string]: any }[] {
-  return Object.keys(parentObject).map((key) => ({
-    key,
-    ...parentObject[key],
-  }));
+  return await res.json();
 }
 
 interface ServicesProps {
@@ -39,9 +19,15 @@ export default function ServicesComp(props: ServicesProps) {
     <Show when={!compose.loading}>
       <For each={compose()}>
         {(c) => (
-          <div class="rounded bg-neutral p-4 flex flex-col">
-            <p class="text-xl">{c.key}</p>
+          <div class="rounded bg-neutral p-4 flex flex-col gap-1">
+            <p class="text-xl">{c.name}</p>
             <p class="">Image: {c.image}</p>
+            <Show
+              when={c.status === "running"}
+              fallback={<p class="badge badge-ghost">N/A</p>}
+            >
+              <p class="badge badge-primary">{c.status}</p>
+            </Show>
           </div>
         )}
       </For>

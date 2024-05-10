@@ -1,7 +1,9 @@
 services:
   bb:
-    image: busy-box
+    image: busybox
     ports:
-      - 3031: 3031
+      - 3031:3031
+    command: sh -c "while true; do echo 'Hello, BusyBox!'; sleep 1; done"
   bbx:
-    image: busy-box
+    image: busybox
+    command: sh -c "while true; do echo 'Hello, BusyBox!'; sleep 1; done"

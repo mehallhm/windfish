@@ -43,6 +43,19 @@ func RegisterWebsockets(app *fiber.App, client *client.Client) *fiber.App {
 		if err != nil {
 			panic(err)
 		}
+
+		for {
+			if mt, msg, err = c.ReadMessage(); err != nil || string(msg) == "stop" {
+				log.Println("read:", err)
+				break
+			}
+		}
+
+		err = stacks.StreamingStop(c, project, path)
+		if err != nil {
+			panic(err)
+			log.Printf("recv: %s with mt %d", msg, mt)
+		}
 	}))
 
 	return app
