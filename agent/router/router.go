@@ -68,7 +68,21 @@ func Register(app *fiber.App, client *client.Client) *fiber.App {
 		if err != nil {
 			return err
 		}
-		return c.SendString(compose)
+
+		type composeThing struct {
+			Project string `json:"project"`
+			Compose string `json:"compose"`
+		}
+
+		j, err := json.Marshal(&composeThing{
+			Project: project,
+			Compose: compose,
+		})
+		if err != nil {
+			return err
+		}
+
+		return c.SendString(string(j))
 	})
 
 	stks.Post(":project/compose", func(c *fiber.Ctx) error {

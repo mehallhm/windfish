@@ -7,8 +7,11 @@ async function getStacks() {
   return res.json();
 }
 
-export default function Page(props) {
+interface PageProps {}
+
+export default function Page(props: PageProps) {
   const [stacks] = createResource(getStacks);
+
   return (
     <>
       <Show when={stacks.loading}>
@@ -21,7 +24,7 @@ export default function Page(props) {
         <Match when={stacks()}>
           <For each={stacks()} fallback={<div>No items</div>}>
             {(item, index) => (
-              <div data-index={index()} class="border">
+              <div data-index={index()} class="card">
                 {item.project}
                 <p class="">{item.state}</p>
               </div>
