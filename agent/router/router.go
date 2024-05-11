@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 
+	"github.com/mehallhm/panamax/events"
 	"github.com/mehallhm/panamax/stacks"
 )
 
@@ -39,7 +40,7 @@ func Setup(stackPath string) *fiber.App {
 	return app
 }
 
-func Register(app *fiber.App, client *client.Client) *fiber.App {
+func Register(app *fiber.App, client *client.Client, eventBus *events.EventBus) *fiber.App {
 	api := app.Group("/api")
 
 	api.Get("/", func(c *fiber.Ctx) error {

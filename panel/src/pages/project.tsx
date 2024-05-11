@@ -53,7 +53,9 @@ export default function Page() {
           </Match>
           <Match when={activeTab() == 3}>
             <div class="bg-slate-950 h-96 overflow-scroll w-full mb-4 rounded">
-              <For each={term()}>{(t) => <li class="text-white">{t}</li>}</For>
+              <For each={term()}>
+                {(t) => <li class="text-white list-none">{t}</li>}
+              </For>
             </div>
           </Match>
         </Switch>

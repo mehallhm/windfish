@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/docker/docker/client"
+	"github.com/mehallhm/panamax/events"
 	"github.com/mehallhm/panamax/router"
 )
 
@@ -17,9 +18,11 @@ func main() {
 		panic(err)
 	}
 
+	eb := events.NewEventBus()
+
 	app := router.Setup(stacksPath)
-	app = router.Register(app, cli)
-	app = router.RegisterWebsockets(app, cli)
+	app = router.Register(app, cli, eb)
+	app = router.RegisterWebsockets(app, cli, eb)
 
 	err = app.Listen(":3000")
 	if err != nil {
