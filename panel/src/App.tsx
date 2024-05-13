@@ -51,7 +51,12 @@ const App: Component<AppProps> = (props: AppProps) => {
               <span>Error: {stacks.error}</span>
             </Match>
             <Match when={stacks()}>
-              <div class="space-y-4">
+              <div class="space-x-2 flex">
+                <p>Status:</p>
+                <span class="badge badge-success">Connected</span>
+              </div>
+              <span class="divider" />
+              <div class="space-y-4 mb-auto">
                 <For each={stacks()} fallback={<div>No items</div>}>
                   {(item, index) => (
                     <A
@@ -61,7 +66,15 @@ const App: Component<AppProps> = (props: AppProps) => {
                       activeClass="bg-primary text-primary-content"
                     >
                       <p class="text-lg">{item.project}</p>
-                      <p class="">{item.state}</p>
+                      <p
+                        class={
+                          item.state == "inactive"
+                            ? "badge badge-ghost"
+                            : "badge badge-primary"
+                        }
+                      >
+                        {item.state}
+                      </p>
                     </A>
                   )}
                 </For>

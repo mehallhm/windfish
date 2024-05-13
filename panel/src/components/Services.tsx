@@ -24,7 +24,7 @@ export default function ServicesComp(props: ServicesProps) {
             <p class="">Image: {c.image}</p>
             <Show
               when={c.status === "running"}
-              fallback={<p class="badge badge-ghost">N/A</p>}
+              fallback={<p class="badge badge-ghost">Not Managed</p>}
             >
               <p class="badge badge-primary">{c.status}</p>
             </Show>

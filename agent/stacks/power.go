@@ -8,9 +8,10 @@ import (
 	"path/filepath"
 
 	"github.com/gofiber/contrib/websocket"
+	"github.com/mehallhm/panamax/events"
 )
 
-func StreamingStart(s *websocket.Conn, project string, path string) error {
+func StreamingStart(s *websocket.Conn, eb *events.EventBus, project string, path string) error {
 	ctx := context.TODO()
 	streamer := func(m []byte) error {
 		err := s.WriteMessage(1, m)
@@ -18,10 +19,15 @@ func StreamingStart(s *websocket.Conn, project string, path string) error {
 	}
 
 	err := streamingComposeCommand(ctx, project, path, streamer, "up", "-d")
+	eb.Publish(events.Event{
+		Type: "power",
+		Data: "",
+	})
+
 	return err
 }
 
-func StreamingStop(s *websocket.Conn, project string, path string) error {
+func StreamingStop(s *websocket.Conn, eb *events.EventBus, project string, path string) error {
 	ctx := context.TODO()
 	streamer := func(m []byte) error {
 		err := s.WriteMessage(1, m)
@@ -29,6 +35,11 @@ func StreamingStop(s *websocket.Conn, project string, path string) error {
 	}
 
 	err := streamingComposeCommand(ctx, project, path, streamer, "down")
+	eb.Publish(events.Event{
+		Type: "power",
+		Data: "",
+	})
+
 	return err
 }
 

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/docker/docker/client"
 	"github.com/gofiber/contrib/websocket"
@@ -23,7 +22,7 @@ func RegisterWebsockets(app *fiber.App, client *client.Client, eventBus *events.
 		log.Println(c.Cookies("session")) // ""
 
 		e := make(chan events.Event)
-		eventBus.Subscribe("", e)
+		eventBus.Subscribe("power", e)
 
 		var (
 			mt  int
@@ -41,29 +40,17 @@ func RegisterWebsockets(app *fiber.App, client *client.Client, eventBus *events.
 			}
 		}(c)
 
-		go func(c *websocket.Conn, eb <-chan events.Event) {
-			for e := range eb {
-				fmt.Println(e)
-				j, err := json.Marshal(e)
-				if err != nil {
-					panic(err)
-				}
-				err = c.WriteJSON(j)
-				if err != nil {
-					panic(err)
-				}
+		for v := range e {
+			fmt.Println(v)
+			j, err := json.Marshal(v)
+			if err != nil {
+				panic(err)
 			}
-		}(c, e)
-
-		time.Sleep(4 * time.Second)
-
-		eventBus.Publish(events.Event{
-			Type:      "",
-			Timestamp: time.Now().GoString(),
-			Data:      "",
-		})
-
-		time.Sleep(10 * time.Second)
+			err = c.WriteJSON(j)
+			if err != nil {
+				panic(err)
+			}
+		}
 	}))
 
 	ws.Get("/terminal/:project", websocket.New(func(c *websocket.Conn) {
@@ -92,22 +79,9 @@ func RegisterWebsockets(app *fiber.App, client *client.Client, eventBus *events.
 			}
 		}(c)
 
-		err = stacks.StreamingStart(c, project, path)
+		err = stacks.StreamingStart(c, eventBus, project, path)
 		if err != nil {
 			panic(err)
-		}
-
-		for {
-			if mt, msg, err = c.ReadMessage(); err != nil || string(msg) == "stop" {
-				log.Println("read:", err)
-				break
-			}
-		}
-
-		err = stacks.StreamingStop(c, project, path)
-		if err != nil {
-			panic(err)
-			log.Printf("recv: %s with mt %d", msg, mt)
 		}
 	}))
 

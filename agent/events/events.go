@@ -2,6 +2,7 @@ package events
 
 type Event struct {
 	Type      string
+	Stack     string
 	Timestamp string
 	Data      interface{}
 }
