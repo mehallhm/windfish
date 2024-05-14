@@ -17,6 +17,8 @@ import (
 func Setup(stackPath string) *fiber.App {
 	app := fiber.New()
 	app.Use(logger.New())
+
+	// TODO: Make this configurable through a config or environment variables or something
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 		AllowHeaders: "*",
@@ -43,12 +45,15 @@ func Setup(stackPath string) *fiber.App {
 func Register(app *fiber.App, client *client.Client, eventBus *events.EventBus) *fiber.App {
 	api := app.Group("/api")
 
+	// TODO: Add the actual web app here, and do some fidling with the paths to make it that all the paths
+	// will lead to the web app. Need to experiment to actually do this though
 	api.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello World!")
 	})
 
-	stks := api.Group("/stacks")
-	stks.Get("status", func(c *fiber.Ctx) error {
+	// TODO: This does not need to return everything about all the containers. Pls standardize what is being sent
+	// with the other funcs pls
+	api.Get("status", func(c *fiber.Ctx) error {
 		stx, err := stacks.ReadStacks(fmt.Sprintf("%s", c.Locals("stacks-path")), client)
 		if err != nil {
 			return err
@@ -61,7 +66,10 @@ func Register(app *fiber.App, client *client.Client, eventBus *events.EventBus) 
 		return c.SendString(string(j))
 	})
 
-	stks.Get(":project/compose", func(c *fiber.Ctx) error {
+	// TODO: Files manager / viewer
+	// HACK: The does not need to send wierd custom stuff to the editor. On top of that, it should respect
+	// the YAML. And probably return the other editor stuff too, such as .env file
+	api.Get(":project/compose", func(c *fiber.Ctx) error {
 		path := fmt.Sprintf("%s", c.Locals("stacks-path"))
 		project := c.Params("project")
 
@@ -86,7 +94,8 @@ func Register(app *fiber.App, client *client.Client, eventBus *events.EventBus) 
 		return c.SendString(string(j))
 	})
 
-	stks.Post(":project/compose", func(c *fiber.Ctx) error {
+	// HACK: Unrestricted write is probably a bad idea. Maybe try some server validation first?
+	api.Post(":project/compose", func(c *fiber.Ctx) error {
 		path := fmt.Sprintf("%s", c.Locals("stacks-path"))
 		project := c.Params("project")
 
@@ -100,7 +109,8 @@ func Register(app *fiber.App, client *client.Client, eventBus *events.EventBus) 
 		return c.SendString("")
 	})
 
-	stks.Get(":project/services", func(c *fiber.Ctx) error {
+	// PERF: Little cleanup, just optimize to what the frontend needs
+	api.Get(":project/services", func(c *fiber.Ctx) error {
 		path := fmt.Sprintf("%s", c.Locals("stacks-path"))
 		project := c.Params("project")
 
@@ -119,5 +129,20 @@ func Register(app *fiber.App, client *client.Client, eventBus *events.EventBus) 
 		return c.SendString(string(j))
 	})
 
+	// TODO: Make the power commands be just REST api commands
+	// As a result, make read logs websocket that grabs everything that happened before
+	// and hand it over to the client. Could potentially use the events system for it?
+	api.Post(":project/start", func(c *fiber.Ctx) error {
+		path, project := getStackPP(c)
+		_ = path
+		_ = project
+
+		return nil
+	})
+
 	return app
+}
+
+func getStackPP(c *fiber.Ctx) (string, string) {
+	return fmt.Sprint(c.Locals("stacks-path")), c.Params("project")
 }

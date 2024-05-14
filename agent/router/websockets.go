@@ -16,29 +16,10 @@ func RegisterWebsockets(app *fiber.App, client *client.Client, eventBus *events.
 	ws := app.Group("/ws")
 
 	ws.Get("/events", websocket.New(func(c *websocket.Conn) {
-		// c.Locals is added to the *websocket.Conn
-		log.Println(c.Locals("allowed"))  // true
-		log.Println(c.Query("v"))         // 1.0
-		log.Println(c.Cookies("session")) // ""
+		// TODO: Authentication on like... everything
 
 		e := make(chan events.Event)
 		eventBus.Subscribe("power", e)
-
-		var (
-			mt  int
-			msg []byte
-			err error
-		)
-
-		go func(c *websocket.Conn) {
-			for {
-				if mt, msg, err = c.ReadMessage(); err != nil {
-					log.Println("read:", err)
-					break
-				}
-				log.Printf("recv: %s with mt %d", msg, mt)
-			}
-		}(c)
 
 		for v := range e {
 			fmt.Println(v)
@@ -61,6 +42,9 @@ func RegisterWebsockets(app *fiber.App, client *client.Client, eventBus *events.
 
 		path := fmt.Sprintf("%s", c.Locals("stacks-path"))
 		project := c.Params("project")
+
+		// FIX: This needs a lot of work... it should only send things and frankly might be better to be tied into the whole
+		// event system with everything else as well at this point
 
 		// websocket.Conn bindings https://pkg.go.dev/github.com/fasthttp/websocket?tab=doc#pkg-index
 		var (
