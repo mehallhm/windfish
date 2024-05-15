@@ -12,7 +12,7 @@ import (
 	"github.com/mehallhm/panamax/stacks"
 )
 
-func RegisterWebsockets(app *fiber.App, client *client.Client, eventBus *events.EventBus) *fiber.App {
+func registerWebsockets(app *fiber.App, client *client.Client, eventBus *events.EventBus) *fiber.App {
 	ws := app.Group("/ws")
 
 	ws.Get("/events", websocket.New(func(c *websocket.Conn) {

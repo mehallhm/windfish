@@ -13,7 +13,7 @@ func TestReadStacks(t *testing.T) {
 		t.Error(err)
 	}
 
-	stacks, err := ReadStacks("../../test-stacks/", cli)
+	stacks, err := GetStackStates("../../test-stacks/", cli)
 	if err != nil {
 		t.Error(err)
 	}

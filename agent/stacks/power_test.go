@@ -28,7 +28,7 @@ func TestStart(t *testing.T) {
 		t.Error(err)
 	}
 
-	stacks, err := ReadStacks(testPath, client)
+	stacks, err := GetStackStates(testPath, client)
 	if err != nil {
 		t.Error(err)
 	}

@@ -13,14 +13,21 @@ import (
 	"github.com/docker/docker/client"
 )
 
-type ParsedContainer struct {
-	Project    string            `json:"project"`
-	State      string            `json:"state"`
-	Containers *[]moby.Container `json:"containers"`
+type Stack struct {
+	Project  string            `json:"project"`
+	State    string            `json:"state"`
+	Services *[]moby.Container `json:"services"`
 }
 
-// ReadStacks reads all stacks present in the given directory. This will reference both the compose directories and the present docker stacks
-func ReadStacks(path string, cli *client.Client) ([]ParsedContainer, error) {
+type ContainerState struct {
+	Name   string `json:"name"`
+	State  string `json:"state"`
+	Status string `json:"status"`
+	Image  string `json:"image"`
+}
+
+// GetStackStates reads all stacks present in the given directory. This will reference both the compose directories and the present docker stacks
+func GetStackStates(path string, cli *client.Client) ([]Stack, error) {
 	onDisk, err := readStacksFromDisk(path)
 	if err != nil {
 		return nil, err
@@ -31,12 +38,12 @@ func ReadStacks(path string, cli *client.Client) ([]ParsedContainer, error) {
 		return nil, err
 	}
 
-	projects := make([]ParsedContainer, 0)
+	projects := make([]Stack, 0)
 
 	for _, p := range onDisk {
 		dStack, ok := groupedProjects[p]
 		if !ok {
-			projects = append(projects, ParsedContainer{
+			projects = append(projects, Stack{
 				Project: p,
 				State:   "inactive",
 			})
@@ -44,14 +51,18 @@ func ReadStacks(path string, cli *client.Client) ([]ParsedContainer, error) {
 		}
 
 		status := combinedStatus(containerToState(dStack))
-		projects = append(projects, ParsedContainer{
-			Project:    p,
-			State:      status,
-			Containers: &dStack,
+		projects = append(projects, Stack{
+			Project:  p,
+			State:    status,
+			Services: &dStack,
 		})
 	}
 
 	return projects, err
+}
+
+func ParseContainerState(stack *moby.Container) []ContainerState {
+	return nil
 }
 
 func ReadComposeFile(project string, path string) (string, error) {
@@ -74,7 +85,6 @@ func readDockerStacks(cli *client.Client) (map[string][]moby.Container, error) {
 	}
 
 	containersByLabel := map[string][]moby.Container{}
-	keys := []string{}
 
 	for _, c := range containerList {
 		label, ok := c.Labels["com.docker.compose.project"]
@@ -84,7 +94,6 @@ func readDockerStacks(cli *client.Client) (map[string][]moby.Container, error) {
 		labelContainers, ok := containersByLabel[label]
 		if !ok {
 			labelContainers = []moby.Container{}
-			keys = append(keys, label)
 		}
 		labelContainers = append(labelContainers, c)
 		containersByLabel[label] = labelContainers
