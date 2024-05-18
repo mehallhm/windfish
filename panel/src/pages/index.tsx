@@ -1,9 +1,6 @@
 import { Show, Switch, Match, createResource, For } from "solid-js";
-
 async function getStacks() {
-  const res = await fetch(
-    import.meta.env.VITE_SERVER_URL + "/api/stacks/status",
-  );
+  const res = await fetch(import.meta.env.VITE_SERVER_URL + "/api/status");
   return res.json();
 }
 

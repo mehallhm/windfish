@@ -16,24 +16,25 @@ import (
 type Stack struct {
 	Project  string            `json:"project"`
 	State    string            `json:"state"`
-	Services *[]moby.Container `json:"services"`
+	Services []*ContainerState `json:"services"`
 }
 
 type ContainerState struct {
 	Name   string `json:"name"`
+	Id     string `json:"id"`
+	Image  string `json:"image"`
 	State  string `json:"state"`
 	Status string `json:"status"`
-	Image  string `json:"image"`
 }
 
-// GetStackStates reads all stacks present in the given directory. This will reference both the compose directories and the present docker stacks
-func GetStackStates(path string, cli *client.Client) ([]Stack, error) {
+// GetStacks reads all stacks present in the given directory. This will reference both the compose directories and the present docker stacks
+func GetStacks(path string, cli *client.Client) ([]Stack, error) {
 	onDisk, err := readStacksFromDisk(path)
 	if err != nil {
 		return nil, err
 	}
 
-	groupedProjects, err := readDockerStacks(cli)
+	groupedContainers, err := readDockerStacks(cli)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +42,7 @@ func GetStackStates(path string, cli *client.Client) ([]Stack, error) {
 	projects := make([]Stack, 0)
 
 	for _, p := range onDisk {
-		dStack, ok := groupedProjects[p]
+		dStack, ok := groupedContainers[p]
 		if !ok {
 			projects = append(projects, Stack{
 				Project: p,
@@ -54,15 +55,26 @@ func GetStackStates(path string, cli *client.Client) ([]Stack, error) {
 		projects = append(projects, Stack{
 			Project:  p,
 			State:    status,
-			Services: &dStack,
+			Services: ParseStackContainers(&dStack),
 		})
 	}
 
 	return projects, err
 }
 
-func ParseContainerState(stack *moby.Container) []ContainerState {
-	return nil
+func ParseStackContainers(stack *[]moby.Container) []*ContainerState {
+	parsedContainers := make([]*ContainerState, 0)
+	for _, c := range *stack {
+		parsedContainers = append(parsedContainers, &ContainerState{
+			Name:   "",
+			Image:  c.Image,
+			Id:     c.ID,
+			State:  c.State,
+			Status: c.Status,
+		})
+	}
+
+	return parsedContainers
 }
 
 func ReadComposeFile(project string, path string) (string, error) {

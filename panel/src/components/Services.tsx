@@ -2,7 +2,7 @@ import { createResource, Show, For } from "solid-js";
 
 async function getCompose(project: string) {
   const res = await fetch(
-    import.meta.env.VITE_SERVER_URL + "/api/stacks/" + project + "/services",
+    import.meta.env.VITE_SERVER_URL + "/api/" + project + "/services",
   );
 
   return await res.json();

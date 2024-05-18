@@ -15,7 +15,7 @@ func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 	// TODO: This does not need to return everything about all the containers. Pls standardize what is being sent
 	// with the other funcs pls
 	api.Get("status", func(c *fiber.Ctx) error {
-		stx, err := stacks.GetStackStates(fmt.Sprintf("%s", c.Locals("stacks-path")), client)
+		stx, err := stacks.GetStacks(fmt.Sprintf("%s", c.Locals("stacks-path")), client)
 		if err != nil {
 			return err
 		}
@@ -31,7 +31,7 @@ func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 	// HACK: The does not need to send weird custom stuff to the editor. On top of that, it should respect
 	// the YAML. And probably return the other editor stuff too, such as .env file
 	api.Get(":project/compose", func(c *fiber.Ctx) error {
-		project, path := getPrPa(c)
+		project, path := getPathProject(c)
 
 		compose, err := stacks.ReadComposeFile(project, path)
 		if err != nil {
@@ -56,7 +56,7 @@ func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 
 	// HACK: Unrestricted write is probably a bad idea. Maybe try some server validation first?
 	api.Post(":project/compose", func(c *fiber.Ctx) error {
-		project, path := getPrPa(c)
+		project, path := getPathProject(c)
 
 		compose := c.Body()
 
@@ -70,7 +70,7 @@ func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 
 	// PERF: Little cleanup, just optimize to what the frontend needs
 	api.Get(":project/services", func(c *fiber.Ctx) error {
-		path, project := getPrPa(c)
+		path, project := getPathProject(c)
 
 		services, err := stacks.GetStackContainers(client, project, path)
 		if err != nil {
@@ -91,7 +91,7 @@ func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 	// As a result, make read logs websocket that grabs everything that happened before
 	// and hand it over to the client. Could potentially use the events system for it?
 	api.Post(":project/start", func(c *fiber.Ctx) error {
-		path, project := getPrPa(c)
+		path, project := getPathProject(c)
 		_ = path
 		_ = project
 

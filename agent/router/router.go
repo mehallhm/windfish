@@ -45,6 +45,6 @@ func Register(app *fiber.App, client *client.Client, eventBus *events.EventBus) 
 	return app
 }
 
-func getPrPa(c *fiber.Ctx) (string, string) {
+func getPathProject(c *fiber.Ctx) (string, string) {
 	return fmt.Sprint(c.Locals("stacks-path")), c.Params("project")
 }

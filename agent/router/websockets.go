@@ -18,6 +18,27 @@ func registerWebsockets(app *fiber.App, client *client.Client, eventBus *events.
 	ws.Get("/events", websocket.New(func(c *websocket.Conn) {
 		// TODO: Authentication on like... everything
 
+		var (
+			mt  int
+			msg []byte
+			err error
+		)
+
+		go func(c *websocket.Conn) {
+			for {
+				if mt, msg, err = c.ReadMessage(); err != nil {
+					log.Println("read:", err)
+					break
+				}
+				log.Printf("recv: %s with mt %d", msg, mt)
+			}
+		}(c)
+
+		err = c.WriteMessage(1, []byte("hi"))
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		e := make(chan events.Event)
 		eventBus.Subscribe("power", e)
 

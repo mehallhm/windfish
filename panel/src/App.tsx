@@ -8,11 +8,10 @@ import {
   createResource,
 } from "solid-js";
 import { A, useParams } from "@solidjs/router";
+import ConnectionBadge from "./components/ConnectionBadge";
 
 async function getStacks() {
-  const res = await fetch(
-    import.meta.env.VITE_SERVER_URL + "/api/stacks/status",
-  );
+  const res = await fetch(import.meta.env.VITE_SERVER_URL + "/api/status");
   return res.json();
 }
 
@@ -51,10 +50,7 @@ const App: Component<AppProps> = (props: AppProps) => {
               <span>Error: {stacks.error}</span>
             </Match>
             <Match when={stacks()}>
-              <div class="space-x-2 flex">
-                <p>Status:</p>
-                <span class="badge badge-success">Connected</span>
-              </div>
+              <ConnectionBadge />
               <span class="divider" />
               <div class="space-y-4 mb-auto">
                 <For each={stacks()} fallback={<div>No items</div>}>

@@ -4,7 +4,7 @@ import { MonacoEditor } from "solid-monaco";
 async function getCompose(project: string) {
   console.log("I AM GETTIUNG NEW DATA for", project);
   const res = await fetch(
-    import.meta.env.VITE_SERVER_URL + "/api/stacks/" + project + "/compose",
+    import.meta.env.VITE_SERVER_URL + "/api/" + project + "/compose",
   );
   return res.json();
 }
