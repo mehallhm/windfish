@@ -13,12 +13,21 @@ func TestGetStackContainers(t *testing.T) {
 		t.Error(err)
 	}
 
-	c, err := GetStackContainers(cli, testPath, "busy-box")
+	c, err := GetStackContainers(cli, "busy-box", testPath)
 	if err != nil {
 		t.Error(err)
 	}
 
-	var sol *[]ServiceContainer
+	sol := map[string]StackStatus{
+		"bb": {
+			Image:  "busybox",
+			Status: "exited",
+		},
+		"bbx": {
+			Image:  "busybox",
+			Status: "exited",
+		},
+	}
 
 	if !reflect.DeepEqual(c, sol) {
 		t.FailNow()

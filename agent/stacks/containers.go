@@ -12,33 +12,34 @@ import (
 	"github.com/docker/docker/client"
 )
 
-type ServiceContainer struct {
-	Name   string `json:"name"`
-	Image  string `json:"image"`
-	Status string `json:"status"`
+type StackStatus struct {
+	Image  string                    `json:"image"`
+	Status string                    `json:"status"`
+	Ports  []types.ServicePortConfig `json:"ports"`
 }
 
-func GetStackContainers(cli *client.Client, project string, path string) (*[]ServiceContainer, error) {
-	p, err := parseComposeFile(project, path)
+func GetStackContainers(cli *client.Client, project string, path string) (map[string]StackStatus, error) {
+	composeProject, err := parseComposeFile(project, path)
 	if err != nil {
 		return nil, err
 	}
 
-	containers := make([]ServiceContainer, 0, len(p.Services))
-	for _, s := range p.Services {
+	containers := make(map[string]StackStatus, len(composeProject.Services))
+	for _, s := range composeProject.Services {
+		// PERF: Don't get all the containers every time
 		c, err := getContainerStatus(cli, project, s.Name)
 		if err != nil {
 			return nil, err
 		}
 
-		containers = append(containers, ServiceContainer{
-			Name:   s.Name,
+		containers[s.Name] = StackStatus{
 			Image:  s.Image,
 			Status: c,
-		})
+			Ports:  s.Ports,
+		}
 	}
 
-	return &containers, nil
+	return containers, nil
 }
 
 func parseComposeFile(project string, path string) (*types.Project, error) {
@@ -55,12 +56,12 @@ func parseComposeFile(project string, path string) (*types.Project, error) {
 		return nil, err
 	}
 
-	p, err := cli.ProjectFromOptions(ctx, options)
+	composeProject, err := cli.ProjectFromOptions(ctx, options)
 	if err != nil {
 		return nil, err
 	}
 
-	return p, nil
+	return composeProject, nil
 }
 
 func getContainerStatus(cli *client.Client, project string, serivce string) (string, error) {
@@ -72,22 +73,22 @@ func getContainerStatus(cli *client.Client, project string, serivce string) (str
 	}
 
 	for _, c := range containerList {
-		p, ok := c.Labels["com.docker.compose.project"]
+		projectLabel, ok := c.Labels["com.docker.compose.project"]
 		if !ok {
 			return "", fmt.Errorf("No labels set on container %q of project", c.ID)
 		}
 
-		s, ok := c.Labels["com.docker.compose.service"]
+		serviceLabel, ok := c.Labels["com.docker.compose.service"]
 		if !ok {
 			return "", fmt.Errorf("No labels set on container %q of project", c.ID)
 		}
 
-		if p != project && s != serivce {
+		if projectLabel != project && serviceLabel != serivce {
 			continue
 		}
 
 		return c.State, nil
 	}
 
-	return "exited", nil
+	return "N/A", nil
 }

@@ -2,7 +2,6 @@ package router
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/docker/docker/client"
 	"github.com/gofiber/fiber/v2"
@@ -12,8 +11,6 @@ import (
 func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 	api := app.Group("/api")
 
-	// TODO: This does not need to return everything about all the containers. Pls standardize what is being sent
-	// with the other funcs pls
 	api.Get("status", func(c *fiber.Ctx) error {
 		path, _ := getPathProject(c)
 		stx, err := stacks.GetStacks(path, client)
@@ -21,11 +18,7 @@ func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 			return err
 		}
 
-		j, err := json.Marshal(stx)
-		if err != nil {
-			return err
-		}
-		return c.SendString(string(j))
+		return c.JSON(stx)
 	})
 
 	api.Get(":project/status", func(c *fiber.Ctx) error {
@@ -77,7 +70,6 @@ func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 		return c.SendString("")
 	})
 
-	// PERF: Little cleanup, just optimize to what the frontend needs
 	api.Get(":project/services", func(c *fiber.Ctx) error {
 		path, project := getPathProject(c)
 
@@ -86,14 +78,7 @@ func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 			return err
 		}
 
-		fmt.Println(services)
-
-		j, err := json.Marshal(services)
-		if err != nil {
-			return err
-		}
-
-		return c.SendString(string(j))
+		return c.JSON(services)
 	})
 
 	// TODO: Make the power commands be just REST api commands
