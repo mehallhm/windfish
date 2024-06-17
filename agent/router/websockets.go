@@ -1,7 +1,6 @@
 package router
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 
@@ -27,11 +26,12 @@ func registerWebsockets(app *fiber.App, client *client.Client, eventBus *events.
 		go func(c *websocket.Conn) {
 			for {
 				if mt, msg, err = c.ReadMessage(); err != nil {
-					log.Println("read:", err)
+					log.Println("read error:", err)
 					break
 				}
 				log.Printf("recv: %s with mt %d", msg, mt)
 			}
+			fmt.Println("reader stopped")
 		}(c)
 
 		err = c.WriteMessage(1, []byte("hi"))
@@ -42,17 +42,17 @@ func registerWebsockets(app *fiber.App, client *client.Client, eventBus *events.
 		e := make(chan events.Event)
 		eventBus.Subscribe("power", e)
 
+		fmt.Println("watching for events")
+
 		for v := range e {
 			fmt.Println(v)
-			j, err := json.Marshal(v)
-			if err != nil {
-				panic(err)
-			}
-			err = c.WriteJSON(j)
+			err = c.WriteJSON(v)
 			if err != nil {
 				panic(err)
 			}
 		}
+
+		fmt.Println("bye")
 	}))
 
 	ws.Get("/terminal/:project", websocket.New(func(c *websocket.Conn) {

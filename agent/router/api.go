@@ -15,7 +15,8 @@ func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 	// TODO: This does not need to return everything about all the containers. Pls standardize what is being sent
 	// with the other funcs pls
 	api.Get("status", func(c *fiber.Ctx) error {
-		stx, err := stacks.GetStacks(fmt.Sprintf("%s", c.Locals("stacks-path")), client)
+		path, _ := getPathProject(c)
+		stx, err := stacks.GetStacks(path, client)
 		if err != nil {
 			return err
 		}
@@ -27,11 +28,19 @@ func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 		return c.SendString(string(j))
 	})
 
+	api.Get(":project/status", func(c *fiber.Ctx) error {
+		path, project := getPathProject(c)
+		_ = project
+		_ = path
+
+		return nil
+	})
+
 	// TODO: Files manager / viewer
 	// HACK: The does not need to send weird custom stuff to the editor. On top of that, it should respect
 	// the YAML. And probably return the other editor stuff too, such as .env file
 	api.Get(":project/compose", func(c *fiber.Ctx) error {
-		project, path := getPathProject(c)
+		path, project := getPathProject(c)
 
 		compose, err := stacks.ReadComposeFile(project, path)
 		if err != nil {
@@ -56,7 +65,7 @@ func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 
 	// HACK: Unrestricted write is probably a bad idea. Maybe try some server validation first?
 	api.Post(":project/compose", func(c *fiber.Ctx) error {
-		project, path := getPathProject(c)
+		path, project := getPathProject(c)
 
 		compose := c.Body()
 
