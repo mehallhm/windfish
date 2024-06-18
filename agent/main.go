@@ -3,9 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/docker/docker/client"
-	"github.com/mehallhm/panamax/events"
 	"github.com/mehallhm/panamax/router"
+	"github.com/mehallhm/panamax/stacks"
 )
 
 const stacksPath = "/Users/micha/Source/panamax/test-stacks/"
@@ -13,17 +12,12 @@ const stacksPath = "/Users/micha/Source/panamax/test-stacks/"
 func main() {
 	fmt.Println("🚀 started")
 
-	cli, err := client.NewClientWithOpts(client.WithHostFromEnv())
-	if err != nil {
-		panic(err)
-	}
+	workspace := stacks.NewWorkspace("", stacksPath)
 
-	eb := events.NewEventBus()
+	app := router.Setup("*", "*")
+	app = router.Register(app, workspace)
 
-	app := router.Setup(stacksPath, "*", "*")
-	app = router.Register(app, cli, eb)
-
-	err = app.Listen(":3000")
+	err := app.Listen(":3000")
 	if err != nil {
 		panic(err)
 	}

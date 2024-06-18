@@ -3,17 +3,6 @@ import { Switch, Match, createSignal, Setter, Accessor, For } from "solid-js";
 import EditorTab from "../components/Editor";
 import ServicesComp from "../components/Services";
 
-async function start(
-  project: string,
-  term: Accessor<Array<string>>,
-  setTerm: Setter<Array<string>>,
-) {
-  const ws = new WebSocket("ws://localhost:3000/ws/terminal/" + project);
-  ws.onmessage = (e) => {
-    setTerm([...term(), e.data]);
-  };
-}
-
 export default function Page() {
   const params = useParams<{ project: string }>();
 
@@ -27,13 +16,26 @@ export default function Page() {
         <div class="join">
           <button
             class="btn join-item"
-            onClick={() => start(params.project!, term, setTerm)}
+            onClick={() =>
+              fetch("http://localhost:3000/api/" + params.project + "/start", {
+                method: "POST",
+              })
+            }
           >
             Start
           </button>
           <button class="btn join-item">Restart</button>
           <button class="btn join-item">Update</button>
-          <button class="btn join-item">Stop</button>
+          <button
+            class="btn join-item"
+            onClick={() =>
+              fetch("http://localhost:3000/api/" + params.project + "/stop", {
+                method: "POST",
+              })
+            }
+          >
+            Stop
+          </button>
         </div>
         <button class="btn join-item btn-error mx-4">Delete</button>
         <TabBar

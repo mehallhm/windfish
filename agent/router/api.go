@@ -1,24 +1,20 @@
 package router
 
 import (
-	"encoding/json"
-
-	"github.com/docker/docker/client"
 	"github.com/gofiber/fiber/v2"
 	"github.com/mehallhm/panamax/stacks"
 )
 
-func registerApi(app *fiber.App, client *client.Client) *fiber.App {
+func registerApi(app *fiber.App, workspace *stacks.Workspace) *fiber.App {
 	api := app.Group("/api")
 
 	api.Get("status", func(c *fiber.Ctx) error {
-		path, _ := getPathProject(c)
-		stx, err := stacks.GetStacks(path, client)
+		err := workspace.ReadStacks()
 		if err != nil {
 			return err
 		}
 
-		return c.JSON(stx)
+		return c.JSON(workspace.Stacks)
 	})
 
 	api.Get(":project/status", func(c *fiber.Ctx) error {
@@ -29,31 +25,20 @@ func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 		return nil
 	})
 
-	// TODO: Files manager / viewer
-	// HACK: The does not need to send weird custom stuff to the editor. On top of that, it should respect
-	// the YAML. And probably return the other editor stuff too, such as .env file
 	api.Get(":project/compose", func(c *fiber.Ctx) error {
 		path, project := getPathProject(c)
 
+		// TODO: Allow for other compose file names. Note this does NOT support multi file compose
+		// instances or provide any basis for validation
 		compose, err := stacks.ReadComposeFile(project, path)
 		if err != nil {
 			return err
 		}
 
-		type composeThing struct {
-			Project string `json:"project"`
-			Compose string `json:"compose"`
-		}
-
-		j, err := json.Marshal(&composeThing{
-			Project: project,
-			Compose: compose,
+		return c.JSON(fiber.Map{
+			"project": project,
+			"compose": compose,
 		})
-		if err != nil {
-			return err
-		}
-
-		return c.SendString(string(j))
 	})
 
 	// HACK: Unrestricted write is probably a bad idea. Maybe try some server validation first?
@@ -71,9 +56,9 @@ func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 	})
 
 	api.Get(":project/services", func(c *fiber.Ctx) error {
-		path, project := getPathProject(c)
+		project := c.Params("project")
 
-		services, err := stacks.GetStackContainers(client, project, path)
+		services, err := workspace.GetStackContainers(project)
 		if err != nil {
 			return err
 		}
@@ -81,15 +66,16 @@ func registerApi(app *fiber.App, client *client.Client) *fiber.App {
 		return c.JSON(services)
 	})
 
-	// TODO: Make the power commands be just REST api commands
-	// As a result, make read logs websocket that grabs everything that happened before
-	// and hand it over to the client. Could potentially use the events system for it?
 	api.Post(":project/start", func(c *fiber.Ctx) error {
-		path, project := getPathProject(c)
-		_ = path
-		_ = project
+		project := c.Params("project")
+		err := workspace.StreamingStart(project)
+		return err
+	})
 
-		return nil
+	api.Post(":project/stop", func(c *fiber.Ctx) error {
+		project := c.Params("project")
+		err := workspace.StreamingStop(project)
+		return err
 	})
 
 	return app

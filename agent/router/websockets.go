@@ -4,14 +4,13 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/docker/docker/client"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/mehallhm/panamax/events"
 	"github.com/mehallhm/panamax/stacks"
 )
 
-func registerWebsockets(app *fiber.App, client *client.Client, eventBus *events.EventBus) *fiber.App {
+func registerWebsockets(app *fiber.App, workspace *stacks.Workspace) *fiber.App {
 	ws := app.Group("/ws")
 
 	ws.Get("/events", websocket.New(func(c *websocket.Conn) {
@@ -34,13 +33,14 @@ func registerWebsockets(app *fiber.App, client *client.Client, eventBus *events.
 			fmt.Println("reader stopped")
 		}(c)
 
-		err = c.WriteMessage(1, []byte("hi"))
-		if err != nil {
-			log.Fatal(err)
-		}
+		// err = c.WriteMessage(1, []byte("hi"))
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
 
 		e := make(chan events.Event)
-		eventBus.Subscribe("power", e)
+		workspace.Bus.Subscribe("power", e)
+		workspace.Bus.Subscribe("terminal", e)
 
 		fmt.Println("watching for events")
 
@@ -48,46 +48,11 @@ func registerWebsockets(app *fiber.App, client *client.Client, eventBus *events.
 			fmt.Println(v)
 			err = c.WriteJSON(v)
 			if err != nil {
-				panic(err)
+				fmt.Println("websocket err: ", err)
 			}
 		}
 
 		fmt.Println("bye")
-	}))
-
-	ws.Get("/terminal/:project", websocket.New(func(c *websocket.Conn) {
-		// c.Locals is added to the *websocket.Conn
-		log.Println(c.Locals("allowed"))  // true
-		log.Println(c.Query("v"))         // 1.0
-		log.Println(c.Cookies("session")) // ""
-
-		path := fmt.Sprintf("%s", c.Locals("stacks-path"))
-		project := c.Params("project")
-
-		// FIX: This needs a lot of work... it should only send things and frankly might be better to be tied into the whole
-		// event system with everything else as well at this point
-
-		// websocket.Conn bindings https://pkg.go.dev/github.com/fasthttp/websocket?tab=doc#pkg-index
-		var (
-			mt  int
-			msg []byte
-			err error
-		)
-
-		go func(c *websocket.Conn) {
-			for {
-				if mt, msg, err = c.ReadMessage(); err != nil {
-					log.Println("read:", err)
-					break
-				}
-				log.Printf("recv: %s with mt %d", msg, mt)
-			}
-		}(c)
-
-		err = stacks.StreamingStart(c, eventBus, project, path)
-		if err != nil {
-			panic(err)
-		}
 	}))
 
 	return app

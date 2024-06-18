@@ -7,9 +7,7 @@ import (
 
 	"github.com/compose-spec/compose-go/v2/cli"
 	"github.com/compose-spec/compose-go/v2/types"
-	containerType "github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/filters"
-	"github.com/docker/docker/client"
+	moby "github.com/docker/docker/api/types"
 )
 
 type StackStatus struct {
@@ -18,23 +16,24 @@ type StackStatus struct {
 	Ports  []types.ServicePortConfig `json:"ports"`
 }
 
-func GetStackContainers(cli *client.Client, project string, path string) (map[string]StackStatus, error) {
-	composeProject, err := parseComposeFile(project, path)
+func (w *Workspace) GetStackContainers(stack string) (map[string]StackStatus, error) {
+	composeProject, err := ParseComposeFile(stack, w.Path)
 	if err != nil {
 		return nil, err
 	}
 
 	containers := make(map[string]StackStatus, len(composeProject.Services))
-	for _, s := range composeProject.Services {
-		// PERF: Don't get all the containers every time
-		c, err := getContainerStatus(cli, project, s.Name)
-		if err != nil {
-			return nil, err
-		}
 
+	mc, err := readDockerStacks(w.DockerClient)
+	c, ok := mc[stack]
+	if err != nil || ok == false {
+		return nil, err
+	}
+
+	for _, s := range composeProject.Services {
 		containers[s.Name] = StackStatus{
 			Image:  s.Image,
-			Status: c,
+			Status: getContainerStatus(c, s.Name),
 			Ports:  s.Ports,
 		}
 	}
@@ -42,7 +41,7 @@ func GetStackContainers(cli *client.Client, project string, path string) (map[st
 	return containers, nil
 }
 
-func parseComposeFile(project string, path string) (*types.Project, error) {
+func ParseComposeFile(project string, path string) (*types.Project, error) {
 	stackpath := filepath.Join(path, project, "compose.yaml")
 	ctx := context.Background()
 
@@ -64,31 +63,20 @@ func parseComposeFile(project string, path string) (*types.Project, error) {
 	return composeProject, nil
 }
 
-func getContainerStatus(cli *client.Client, project string, serivce string) (string, error) {
-	containerList, err := cli.ContainerList(context.Background(), containerType.ListOptions{
-		Filters: filters.NewArgs(filters.Arg("label", "com.docker.compose.project"), filters.Arg("label", "com.docker.compose.service")),
-	})
-	if err != nil {
-		return "", err
-	}
-
+func getContainerStatus(containerList []moby.Container, serivce string) string {
 	for _, c := range containerList {
-		projectLabel, ok := c.Labels["com.docker.compose.project"]
-		if !ok {
-			return "", fmt.Errorf("No labels set on container %q of project", c.ID)
-		}
-
 		serviceLabel, ok := c.Labels["com.docker.compose.service"]
 		if !ok {
-			return "", fmt.Errorf("No labels set on container %q of project", c.ID)
+			fmt.Printf("No labels set on ", c.ID)
+			return ""
 		}
 
-		if projectLabel != project && serviceLabel != serivce {
+		if serviceLabel != serivce {
 			continue
 		}
 
-		return c.State, nil
+		return c.State
 	}
 
-	return "N/A", nil
+	return "N/A"
 }

@@ -13,30 +13,16 @@ import (
 	"github.com/docker/docker/client"
 )
 
-type Stack struct {
-	Project  string            `json:"project"`
-	State    string            `json:"state"`
-	Services []*ContainerState `json:"services"`
-}
-
-type ContainerState struct {
-	Name   string `json:"name"`
-	Id     string `json:"id"`
-	Image  string `json:"image"`
-	State  string `json:"state"`
-	Status string `json:"status"`
-}
-
-// GetStacks reads all stacks present in the given directory. This will reference both the compose directories and the present docker stacks
-func GetStacks(path string, cli *client.Client) ([]Stack, error) {
-	onDisk, err := readStacksFromDisk(path)
+// ReadStacks reads all stacks present in the given directory. This will reference both the compose directories and the present docker stacks. Overides the stacks in the workspace
+func (w *Workspace) ReadStacks() error {
+	onDisk, err := readStacksFromDisk(w.Path)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	groupedContainers, err := readDockerStacks(cli)
+	groupedContainers, err := readDockerStacks(w.DockerClient)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	projects := make([]Stack, 0)
@@ -51,20 +37,22 @@ func GetStacks(path string, cli *client.Client) ([]Stack, error) {
 			continue
 		}
 
-		status := combinedStatus(containerToState(dStack))
+		status := combinedStatus(dStack)
 		projects = append(projects, Stack{
 			Project:  p,
 			State:    status,
-			Services: ParseStackContainers(&dStack),
+			Services: ParseStackContainers(dStack),
 		})
 	}
 
-	return projects, err
+	w.Stacks = projects
+
+	return err
 }
 
-func ParseStackContainers(stack *[]moby.Container) []*ContainerState {
+func ParseStackContainers(stack []moby.Container) []*ContainerState {
 	parsedContainers := make([]*ContainerState, 0)
-	for _, c := range *stack {
+	for _, c := range stack {
 		parsedContainers = append(parsedContainers, &ContainerState{
 			Name:   "",
 			Image:  c.Image,
@@ -142,15 +130,13 @@ func readStacksFromDisk(path string) ([]string, error) {
 	return stacks, nil
 }
 
-func containerToState(containers []moby.Container) []string {
+// Converts the containers for a stack into a status badge for the whole stack
+func combinedStatus(containers []moby.Container) string {
 	statuses := []string{}
 	for _, c := range containers {
 		statuses = append(statuses, c.State)
 	}
-	return statuses
-}
 
-func combinedStatus(statuses []string) string {
 	nbByStatus := map[string]int{}
 	keys := []string{}
 	for _, status := range statuses {

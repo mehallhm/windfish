@@ -3,16 +3,15 @@ package router
 import (
 	"fmt"
 
-	"github.com/docker/docker/client"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 
-	"github.com/mehallhm/panamax/events"
+	"github.com/mehallhm/panamax/stacks"
 )
 
-func Setup(stackPath string, allowedOrigins string, allowedHeaders string) *fiber.App {
+func Setup(allowedOrigins string, allowedHeaders string) *fiber.App {
 	app := fiber.New()
 	app.Use(logger.New())
 
@@ -20,11 +19,6 @@ func Setup(stackPath string, allowedOrigins string, allowedHeaders string) *fibe
 		AllowOrigins: allowedOrigins,
 		AllowHeaders: allowedHeaders,
 	}))
-
-	app.Use(func(c *fiber.Ctx) error {
-		c.Locals("stacks-path", stackPath)
-		return c.Next()
-	})
 
 	app.Use("/ws", func(c *fiber.Ctx) error {
 		if websocket.IsWebSocketUpgrade(c) {
@@ -37,10 +31,10 @@ func Setup(stackPath string, allowedOrigins string, allowedHeaders string) *fibe
 	return app
 }
 
-func Register(app *fiber.App, client *client.Client, eventBus *events.EventBus) *fiber.App {
-	app = registerApi(app, client)
+func Register(app *fiber.App, workspace *stacks.Workspace) *fiber.App {
+	app = registerApi(app, workspace)
 	app = registerPanel(app)
-	app = registerWebsockets(app, client, eventBus)
+	app = registerWebsockets(app, workspace)
 
 	return app
 }
