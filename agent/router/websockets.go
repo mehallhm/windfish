@@ -16,13 +16,13 @@ func registerWebsockets(app *fiber.App, workspace *stacks.Workspace) *fiber.App 
 	ws.Get("/events", websocket.New(func(c *websocket.Conn) {
 		// TODO: Authentication on like... everything
 
-		var (
-			mt  int
-			msg []byte
-			err error
-		)
-
 		go func(c *websocket.Conn) {
+			var (
+				mt  int
+				msg []byte
+				err error
+			)
+
 			for {
 				if mt, msg, err = c.ReadMessage(); err != nil {
 					log.Println("read error:", err)
@@ -33,11 +33,6 @@ func registerWebsockets(app *fiber.App, workspace *stacks.Workspace) *fiber.App 
 			fmt.Println("reader stopped")
 		}(c)
 
-		// err = c.WriteMessage(1, []byte("hi"))
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
-
 		e := make(chan events.Event)
 		workspace.Bus.Subscribe("power", e)
 		workspace.Bus.Subscribe("terminal", e)
@@ -46,7 +41,7 @@ func registerWebsockets(app *fiber.App, workspace *stacks.Workspace) *fiber.App 
 
 		for v := range e {
 			fmt.Println(v)
-			err = c.WriteJSON(v)
+			err := c.WriteJSON(v)
 			if err != nil {
 				fmt.Println("websocket err: ", err)
 			}

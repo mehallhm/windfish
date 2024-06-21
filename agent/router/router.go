@@ -1,8 +1,6 @@
 package router
 
 import (
-	"fmt"
-
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -37,8 +35,4 @@ func Register(app *fiber.App, workspace *stacks.Workspace) *fiber.App {
 	app = registerWebsockets(app, workspace)
 
 	return app
-}
-
-func getPathProject(c *fiber.Ctx) (string, string) {
-	return fmt.Sprint(c.Locals("stacks-path")), c.Params("project")
 }

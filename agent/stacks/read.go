@@ -25,24 +25,22 @@ func (w *Workspace) ReadStacks() error {
 		return err
 	}
 
-	projects := make([]Stack, 0)
+	projects := make(map[string]Stack)
 
 	for _, p := range onDisk {
 		dStack, ok := groupedContainers[p]
 		if !ok {
-			projects = append(projects, Stack{
-				Project: p,
-				State:   "inactive",
-			})
+			projects[p] = Stack{
+				State: "inactive",
+			}
 			continue
 		}
 
 		status := combinedStatus(dStack)
-		projects = append(projects, Stack{
-			Project:  p,
+		projects[p] = Stack{
 			State:    status,
 			Services: ParseStackContainers(dStack),
-		})
+		}
 	}
 
 	w.Stacks = projects

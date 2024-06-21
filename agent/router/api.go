@@ -8,29 +8,41 @@ import (
 func registerApi(app *fiber.App, workspace *stacks.Workspace) *fiber.App {
 	api := app.Group("/api")
 
+	// Returns the cached statuses for all projects
 	api.Get("status", func(c *fiber.Ctx) error {
+		return c.JSON(workspace.Stacks)
+	})
+
+	// Reads the stacks and actual status from disk / docker
+	api.Post("refresh", func(c *fiber.Ctx) error {
 		err := workspace.ReadStacks()
 		if err != nil {
 			return err
 		}
-
-		return c.JSON(workspace.Stacks)
-	})
-
-	api.Get(":project/status", func(c *fiber.Ctx) error {
-		path, project := getPathProject(c)
-		_ = project
-		_ = path
-
 		return nil
 	})
 
+	// Returns the cached status for a project
+	api.Get(":project/status", func(c *fiber.Ctx) error {
+		project := c.Params("project")
+
+		status, ok := workspace.Stacks[project]
+		if !ok {
+			return &fiber.Error{
+				Code:    500,
+				Message: "Project not found",
+			}
+		}
+
+		return c.JSON(status)
+	})
+
 	api.Get(":project/compose", func(c *fiber.Ctx) error {
-		path, project := getPathProject(c)
+		project := c.Params("project")
 
 		// TODO: Allow for other compose file names. Note this does NOT support multi file compose
 		// instances or provide any basis for validation
-		compose, err := stacks.ReadComposeFile(project, path)
+		compose, err := stacks.ReadComposeFile(project, workspace.Path)
 		if err != nil {
 			return err
 		}
@@ -43,16 +55,15 @@ func registerApi(app *fiber.App, workspace *stacks.Workspace) *fiber.App {
 
 	// HACK: Unrestricted write is probably a bad idea. Maybe try some server validation first?
 	api.Post(":project/compose", func(c *fiber.Ctx) error {
-		path, project := getPathProject(c)
-
+		project := c.Params("project")
 		compose := c.Body()
 
-		err := stacks.UpdateStack(project, path, compose)
+		err := stacks.UpdateStack(project, workspace.Path, compose)
 		if err != nil {
 			return err
 		}
 
-		return c.SendString("")
+		return nil
 	})
 
 	api.Get(":project/services", func(c *fiber.Ctx) error {

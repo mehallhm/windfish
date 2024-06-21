@@ -13,11 +13,15 @@ func main() {
 	fmt.Println("🚀 started")
 
 	workspace := stacks.NewWorkspace("", stacksPath)
+	err := workspace.ReadStacks()
+	if err != nil {
+		panic(err)
+	}
 
 	app := router.Setup("*", "*")
 	app = router.Register(app, workspace)
 
-	err := app.Listen(":3000")
+	err = app.Listen(":3000")
 	if err != nil {
 		panic(err)
 	}

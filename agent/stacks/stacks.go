@@ -6,7 +6,7 @@ import (
 )
 
 type Workspace struct {
-	Stacks       []Stack
+	Stacks       map[string]Stack
 	Path         string
 	Name         string
 	DockerClient *client.Client
@@ -14,7 +14,6 @@ type Workspace struct {
 }
 
 type Stack struct {
-	Project  string            `json:"project"`
 	State    string            `json:"state"`
 	Services []*ContainerState `json:"services"`
 }
