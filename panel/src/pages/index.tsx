@@ -1,4 +1,5 @@
 import { Show, Switch, Match, createResource, For } from "solid-js";
+
 async function getStacks() {
   const res = await fetch(import.meta.env.VITE_SERVER_URL + "/api/status");
   return res.json();
@@ -19,11 +20,11 @@ export default function Page(props: PageProps) {
           <span>Error: {stacks.error}</span>
         </Match>
         <Match when={stacks()}>
-          <For each={stacks()} fallback={<div>No items</div>}>
-            {(item, index) => (
+          <For each={Object.keys(stacks())} fallback={<div>No items</div>}>
+            {(project, index) => (
               <div data-index={index()} class="card">
-                {item.project}
-                <p class="">{item.state}</p>
+                {project}
+                <p class="">{stacks()[project].state}</p>
               </div>
             )}
           </For>

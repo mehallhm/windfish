@@ -101,23 +101,26 @@ const App: Component<AppProps> = (props: AppProps) => {
               <ConnectionBadge socketState={socketState} />
               <span class="divider" />
               <div class="space-y-4 mb-auto">
-                <For each={stacks()} fallback={<div>No items</div>}>
-                  {(item, index) => (
+                <For
+                  each={Object.keys(stacks())}
+                  fallback={<div>No items</div>}
+                >
+                  {(project, index) => (
                     <A
                       data-index={index()}
                       class="flex flex-col rounded hover:bg-neutral hover:text-neutral-content p-2"
-                      href={"/" + item.project}
+                      href={"/stack/" + project}
                       activeClass="bg-primary text-primary-content"
                     >
-                      <p class="text-lg">{item.project}</p>
+                      <p class="text-lg">{project}</p>
                       <p
                         class={
-                          item.state == "inactive"
+                          stacks()[project].state == "inactive"
                             ? "badge badge-ghost"
                             : "badge badge-primary"
                         }
                       >
-                        {item.state}
+                        {stacks()[project].state}
                       </p>
                     </A>
                   )}

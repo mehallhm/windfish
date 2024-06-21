@@ -25,9 +25,13 @@ func (w *Workspace) GetStackContainers(stack string) (map[string]StackStatus, er
 	containers := make(map[string]StackStatus, len(composeProject.Services))
 
 	mc, err := readDockerStacks(w.DockerClient)
-	c, ok := mc[stack]
-	if err != nil || ok == false {
+	if err != nil {
 		return nil, err
+	}
+
+	c, ok := mc[stack]
+	if !ok {
+		c = []moby.Container{}
 	}
 
 	for _, s := range composeProject.Services {

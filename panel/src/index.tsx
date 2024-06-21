@@ -21,7 +21,7 @@ render(
   () => (
     <Router root={App}>
       <Route path="/" component={Index} />
-      <Route path={"/:project"} component={Project} />
+      <Route path={"/stack/:project"} component={Project} />
     </Router>
   ),
   root!,

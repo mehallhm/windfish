@@ -8,6 +8,8 @@ import (
 func registerApi(app *fiber.App, workspace *stacks.Workspace) *fiber.App {
 	api := app.Group("/api")
 
+	api = registerLogEndpoints(api, workspace)
+
 	// Returns the cached statuses for all projects
 	api.Get("status", func(c *fiber.Ctx) error {
 		return c.JSON(workspace.Stacks)
