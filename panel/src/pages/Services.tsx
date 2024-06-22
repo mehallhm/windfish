@@ -1,3 +1,4 @@
+import { useParams } from "@solidjs/router";
 import { createResource, Show, For } from "solid-js";
 
 async function getCompose(project: string) {
@@ -8,12 +9,9 @@ async function getCompose(project: string) {
   return await res.json();
 }
 
-interface ServicesProps {
-  project: string;
-}
-
-export default function ServicesComp(props: ServicesProps) {
-  const [compose] = createResource(() => props.project, getCompose);
+export default function ServicesComp() {
+  const params = useParams<{ project: string }>();
+  const [compose] = createResource(() => params.project, getCompose);
 
   return (
     <Show when={!compose.loading}>

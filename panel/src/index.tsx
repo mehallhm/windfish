@@ -17,11 +17,19 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 const Index = lazy(() => import("./pages/index"));
 const Project = lazy(() => import("./pages/project"));
 
+const Services = lazy(() => import("./pages/Services"));
+const Editor = lazy(() => import("./pages/Editor"));
+const Console = lazy(() => import("./pages/console"));
+
 render(
   () => (
     <Router root={App}>
       <Route path="/" component={Index} />
+
       <Route path={"/stack/:project"} component={Project} />
+      <Route path={"/stack/:project/services"} component={Services} />
+      <Route path={"/stack/:project/editor"} component={Editor} />
+      <Route path={"/stack/:project/console"} component={Console} />
     </Router>
   ),
   root!,

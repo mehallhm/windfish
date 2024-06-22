@@ -11,6 +11,7 @@ import {
 import { A, useParams } from "@solidjs/router";
 import ConnectionBadge from "./components/ConnectionBadge";
 import { Separator } from "./components/ui/Separator";
+import MenuOptions from "./components/MenuOptioms";
 
 async function getStacks() {
   const res = await fetch(import.meta.env.VITE_SERVER_URL + "/api/status");
@@ -18,7 +19,7 @@ async function getStacks() {
 }
 
 interface AppProps {
-  children: JSX.Element;
+  children?: JSX.Element;
 }
 
 type WSState = "CONNECTING" | "OPEN" | "CLOSING" | "CLOSED";
@@ -29,10 +30,12 @@ const App: Component<AppProps> = (props: AppProps) => {
 
   const [socketState, setSocketState] = createSignal<WSState>("CONNECTING");
   const [Wsocket, setWsocket] = createSignal();
-  const [messages, setMessages] = createSignal([]);
+  const [messages, setMessages] = createSignal<
+    { type: string; stack: string; data: string }[]
+  >([]);
   const socket = new WebSocket("ws://localhost:3000/ws/events");
-  socket.addEventListener("open", (e) => setSocketState("OPEN"));
-  socket.addEventListener("close", (e) => {
+  socket.addEventListener("open", () => setSocketState("OPEN"));
+  socket.addEventListener("close", () => {
     setSocketState("CLOSED");
     console.log("closed");
   });
@@ -47,33 +50,31 @@ const App: Component<AppProps> = (props: AppProps) => {
 
   return (
     <div class="font-rubik w-full h-screen flex flex-col">
-      <div class="items-center flex w-full border-b h-8 justify-between px-4">
-        <span class="flex items-center gap-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="w-6 h-6"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M6 21h6" />
-            <path d="M9 21v-18l-6 6h18" />
-            <path d="M9 3l10 6" />
-            <path d="M17 9v4a2 2 0 1 1 -2 2" />
-          </svg>
-          <h2 class="font-bold">Panamax</h2>
-        </span>
-        <ConnectionBadge socketState={socketState} />
-      </div>
       <div class="flex h-full">
-        <aside class="w-52 flex flex-col border-r text-sm sticky">
-          <ul class="menu p-4 min-h-full bg-base-200 text-base-content">
+        <aside class="w-52 flex flex-col border-r text-sm sticky select-none p-2 gap-1">
+          <A class="flex items-center gap-1 mb-4" href="/">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-6 h-6"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M6 21h6" />
+              <path d="M9 21v-18l-6 6h18" />
+              <path d="M9 3l10 6" />
+              <path d="M17 9v4a2 2 0 1 1 -2 2" />
+            </svg>
+            <h2 class="font-bold text-lg">Panamax</h2>
+          </A>
+          <MenuOptions project={params.project} />
+          <ul class="mt-4 bg-base-200 text-base-content mb-auto">
             <Show when={stacks.loading}>
               <p>Loading...</p>
             </Show>
@@ -91,7 +92,7 @@ const App: Component<AppProps> = (props: AppProps) => {
                     {(project, index) => (
                       <A
                         data-index={index()}
-                        class="flex items-center justify-between rounded px-1 py-0.5"
+                        class="flex items-center justify-between rounded px-1 py-0.5 h-7"
                         inactiveClass=""
                         activeClass="bg-muted"
                         href={"/stack/" + project}
@@ -133,6 +134,7 @@ const App: Component<AppProps> = (props: AppProps) => {
               </Match>
             </Switch>
           </ul>
+          <ConnectionBadge socketState={socketState} />
         </aside>
         <div class="overflow-y-auto flex flex-col w-full">{props.children}</div>
       </div>

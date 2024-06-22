@@ -1,3 +1,4 @@
+import { useParams } from "@solidjs/router";
 import { createResource, Switch, Match, Show, createSignal } from "solid-js";
 import { MonacoEditor } from "solid-monaco";
 
@@ -20,13 +21,10 @@ async function writeCompose(project: string, compose: string | undefined) {
   return res.status == 200;
 }
 
-interface EditorTabProps {
-  project: string;
-}
-
-export default function EditorTab(props: EditorTabProps) {
+export default function EditorTab() {
+  const params = useParams<{ project: string }>();
   const [compose, { mutate, refetch }] = createResource(
-    () => props.project,
+    () => params.project,
     getCompose,
   );
 
@@ -40,7 +38,7 @@ export default function EditorTab(props: EditorTabProps) {
             <button
               class="btn join-item btn-success"
               onClick={() => {
-                writeCompose(props.project, compose().compose);
+                writeCompose(params.project, compose().compose);
                 setEditMode(false);
               }}
             >
@@ -68,7 +66,7 @@ export default function EditorTab(props: EditorTabProps) {
           language="yaml"
           value={compose().compose}
           options={{
-            theme: "vs-dark",
+            theme: "vs-light",
             readOnly: !editMode(),
           }}
           onChange={(e) => mutate(e)}
