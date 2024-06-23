@@ -1,12 +1,16 @@
-import { Separator } from "@kobalte/core/separator";
 import { useParams } from "@solidjs/router";
+import { ChartData } from "chart.js";
 import { createSignal } from "solid-js";
 import { LineChart } from "~/components/ui/Charts";
 
 export default function Page() {
   const params = useParams<{ project: string }>();
   const socket = new WebSocket("ws://localhost:3000/ws/stats/1");
-  const [percentages, setPercentages] = createSignal([]);
+  const [chartData, setChartData] = createSignal<ChartData>({
+    labels: Array.from(Array(60).keys()),
+    datasets: [{ data: [], fill: true }],
+  });
+
   socket.onmessage = (e) => {
     const data = JSON.parse(e.data);
     const cpuDelta =
@@ -17,15 +21,19 @@ export default function Page() {
     const numCores = data.cpu_stats.online_cpus;
 
     const percent = (cpuDelta / systemDelta) * numCores * 100;
-    if (percentages().length < 60) {
-      setPercentages([
-        ...percentages(),
-        { x: percentages().length, y: percent },
-      ]);
+    if (chartData().datasets[0].data.length < 60) {
+      setChartData((prev) => {
+        const datasets = prev.datasets;
+        datasets[0].data.push(percent);
+        return { ...prev, datasets };
+      });
     } else {
-      let arr = [...percentages()];
-      arr.shift();
-      setPercentages([...arr, { x: percentages().length, y: percent }]);
+      setChartData((prev) => {
+        const datasets = prev.datasets;
+        datasets[0].data.shift();
+        datasets[0].data.push(percent);
+        return { ...prev, datasets };
+      });
     }
   };
 
@@ -33,12 +41,7 @@ export default function Page() {
     <div class="w-full space-y-4 p-8">
       <h2 class="text-2xl font-semibold text-primary">{params.project}</h2>
       <div class="h-64 w-full">
-        <LineChart
-          data={{
-            labels: Array.from(Array(60).keys()),
-            datasets: [{ data: percentages(), fill: true, animation: false }],
-          }}
-        />
+        <LineChart data={chartData()} />
       </div>
     </div>
   );
