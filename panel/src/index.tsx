@@ -21,6 +21,8 @@ const Services = lazy(() => import("./pages/Services"));
 const Editor = lazy(() => import("./pages/Editor"));
 const Console = lazy(() => import("./pages/console"));
 
+const NewStack = lazy(() => import("./pages/NewStack"));
+
 render(
   () => (
     <Router root={App}>
@@ -30,6 +32,8 @@ render(
       <Route path={"/stack/:project/services"} component={Services} />
       <Route path={"/stack/:project/editor"} component={Editor} />
       <Route path={"/stack/:project/console"} component={Console} />
+
+      <Route path={"/new/stack"} component={NewStack} />
     </Router>
   ),
   root!,

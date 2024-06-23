@@ -15,13 +15,12 @@ export default function MenuOptions(props: MenuOptionsProps) {
       </Match>
       <Match when={props.project}>
         <div class="space-y-1">
-          {/* <h3 class="text-md font-semibold">Current Stack</h3> */}
-          <span class="flex w-full justify-between items-center">
-            <h2 class="text-primary text-md font-semibold">{props.project}</h2>
+          <span class="flex w-full items-center justify-between">
+            <h2 class="text-md font-semibold text-primary">{props.project}</h2>
             <PowerButton project={props.project} />
           </span>
           <A
-            class="flex items-center gap-1 rounded px-1 py-0.5 hover:bg-muted h-7"
+            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-muted"
             inactiveClass=""
             end
             activeClass="bg-muted"
@@ -37,7 +36,7 @@ export default function MenuOptions(props: MenuOptionsProps) {
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="w-4 h-4"
+              class="h-4 w-4"
             >
               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
               <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
@@ -47,7 +46,7 @@ export default function MenuOptions(props: MenuOptionsProps) {
             <p class="overflow-clip">Home</p>
           </A>
           <A
-            class="flex items-center gap-1 rounded px-1 py-0.5 hover:bg-muted h-7"
+            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-muted"
             inactiveClass=""
             activeClass="bg-muted"
             href={"/stack/" + props.project + "/services"}
@@ -62,17 +61,19 @@ export default function MenuOptions(props: MenuOptionsProps) {
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="w-4 h-4"
+              class="h-4 w-4"
             >
               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
-              <path d="M4 12l8 4l8 -4" />
-              <path d="M4 16l8 4l8 -4" />
+              <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+              <path d="M12 12l8 -4.5" />
+              <path d="M12 12l0 9" />
+              <path d="M12 12l-8 -4.5" />
+              <path d="M16 5.25l-8 4.5" />
             </svg>
             <p class="overflow-clip">Services</p>
           </A>
           <A
-            class="flex items-center gap-1 rounded px-1 py-0.5 hover:bg-muted h-7"
+            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-muted"
             inactiveClass=""
             activeClass="bg-muted"
             href={"/stack/" + props.project + "/editor"}
@@ -87,7 +88,7 @@ export default function MenuOptions(props: MenuOptionsProps) {
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="w-4 h-4"
+              class="h-4 w-4"
             >
               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
               <path d="M14 3v4a1 1 0 0 0 1 1h4" />
@@ -96,7 +97,7 @@ export default function MenuOptions(props: MenuOptionsProps) {
             <p class="overflow-clip">Compose</p>
           </A>
           <A
-            class="flex items-center gap-1 rounded px-1 py-0.5 hover:bg-muted h-7"
+            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-muted"
             inactiveClass=""
             activeClass="bg-muted"
             href={"/stack/" + props.project + "/console"}

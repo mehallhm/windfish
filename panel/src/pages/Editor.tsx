@@ -31,47 +31,50 @@ export default function EditorTab() {
   const [editMode, setEditMode] = createSignal(false);
 
   return (
-    <Show when={!compose.loading}>
-      <div class="join">
-        <Switch>
-          <Match when={editMode()}>
-            <button
-              class="btn join-item btn-success"
-              onClick={() => {
-                writeCompose(params.project, compose().compose);
-                setEditMode(false);
-              }}
-            >
-              Save
-            </button>
-            <button
-              class="btn join-item btn-error"
-              onClick={() => {
-                setEditMode(!editMode());
-                refetch();
-              }}
-            >
-              Cancel
-            </button>
-          </Match>
-          <Match when={!editMode()}>
-            <button class="btn join-item" onClick={() => setEditMode(true)}>
-              Edit
-            </button>
-          </Match>
-        </Switch>
-      </div>
-      <div class="h-96">
-        <MonacoEditor
-          language="yaml"
-          value={compose().compose}
-          options={{
-            theme: "vs-light",
-            readOnly: !editMode(),
-          }}
-          onChange={(e) => mutate(e)}
-        />
-      </div>
-    </Show>
+    <div class="w-full space-y-4 p-8">
+      <h2 class="text-2xl font-semibold text-primary">Files</h2>
+      <Show when={!compose.loading}>
+        <div class="join">
+          <Switch>
+            <Match when={editMode()}>
+              <button
+                class="btn join-item btn-success"
+                onClick={() => {
+                  writeCompose(params.project, compose().compose);
+                  setEditMode(false);
+                }}
+              >
+                Save
+              </button>
+              <button
+                class="btn join-item btn-error"
+                onClick={() => {
+                  setEditMode(!editMode());
+                  refetch();
+                }}
+              >
+                Cancel
+              </button>
+            </Match>
+            <Match when={!editMode()}>
+              <button class="btn join-item" onClick={() => setEditMode(true)}>
+                Edit
+              </button>
+            </Match>
+          </Switch>
+        </div>
+        <div class="h-96 rounded border">
+          <MonacoEditor
+            language="yaml"
+            value={compose().compose}
+            options={{
+              theme: "vs-light",
+              readOnly: !editMode(),
+            }}
+            onChange={(e) => mutate(e)}
+          />
+        </div>
+      </Show>
+    </div>
   );
 }

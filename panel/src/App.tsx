@@ -7,6 +7,7 @@ import {
   For,
   createResource,
   createSignal,
+  Suspense,
 } from "solid-js";
 import { A, useParams } from "@solidjs/router";
 import ConnectionBadge from "./components/ConnectionBadge";
@@ -49,10 +50,10 @@ const App: Component<AppProps> = (props: AppProps) => {
   setWsocket(socket);
 
   return (
-    <div class="font-rubik w-full h-screen flex flex-col">
+    <div class="flex h-screen w-full flex-col font-rubik">
       <div class="flex h-full">
-        <aside class="w-52 flex flex-col border-r text-sm sticky select-none p-2 gap-1">
-          <A class="flex items-center gap-1 mb-4" href="/">
+        <aside class="sticky flex w-52 select-none flex-col gap-1 border-r p-2 text-sm">
+          <A class="mb-4 flex items-center gap-1" href="/">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -63,7 +64,7 @@ const App: Component<AppProps> = (props: AppProps) => {
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="w-6 h-6"
+              class="h-6 w-6"
             >
               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
               <path d="M6 21h6" />
@@ -71,72 +72,88 @@ const App: Component<AppProps> = (props: AppProps) => {
               <path d="M9 3l10 6" />
               <path d="M17 9v4a2 2 0 1 1 -2 2" />
             </svg>
-            <h2 class="font-bold text-lg">Panamax</h2>
+            <h2 class="text-lg font-bold">Panamax</h2>
           </A>
           <MenuOptions project={params.project} />
-          <ul class="mt-4 bg-base-200 text-base-content mb-auto">
-            <Show when={stacks.loading}>
-              <p>Loading...</p>
-            </Show>
-            <Switch>
-              <Match when={stacks.error}>
-                <span>Error: {stacks.error}</span>
-              </Match>
-              <Match when={stacks()}>
-                <h3 class="text-md font-semibold">All Stacks</h3>
-                <div class="space-y-1">
-                  <For
-                    each={Object.keys(stacks())}
-                    fallback={<div>No items</div>}
-                  >
-                    {(project, index) => (
-                      <A
-                        data-index={index()}
-                        class="flex items-center justify-between rounded px-1 py-0.5 h-7"
-                        inactiveClass=""
-                        activeClass="bg-muted"
-                        href={"/stack/" + project}
-                      >
-                        <span class="flex items-center gap-1">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="w-4 h-4"
-                          >
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
-                            <path d="M12 12l8 -4.5" />
-                            <path d="M12 12l0 9" />
-                            <path d="M12 12l-8 -4.5" />
-                            <path d="M16 5.25l-8 4.5" />
-                          </svg>
-                          <p class="overflow-clip">{project}</p>
-                        </span>
-                        <span
-                          class={
-                            "w-2 h-2 rounded-full " +
-                            (stacks()[project].state == "inactive"
-                              ? "bg-slate-300 opacity-60"
-                              : "bg-green-200")
-                          }
-                        ></span>
-                      </A>
-                    )}
-                  </For>
-                </div>
-              </Match>
-            </Switch>
+          <ul class="bg-base-200 text-base-content mb-auto mt-4">
+            <Suspense fallback={<p>loading...</p>}>
+              <h3 class="text-md font-semibold">All Stacks</h3>
+              <div class="space-y-1">
+                <For
+                  each={Object.keys(stacks() ?? {})}
+                  fallback={<div>No items</div>}
+                >
+                  {(project, index) => (
+                    <A
+                      data-index={index()}
+                      class="flex h-7 items-center justify-between rounded px-1 py-0.5 hover:bg-muted"
+                      inactiveClass=""
+                      activeClass="bg-muted"
+                      href={"/stack/" + project}
+                    >
+                      <span class="flex items-center gap-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="h-4 w-4"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+                          <path d="M4 12l8 4l8 -4" />
+                          <path d="M4 16l8 4l8 -4" />
+                        </svg>
+                        <p class="overflow-clip">{project}</p>
+                      </span>
+                      <span
+                        class={
+                          "h-2 w-2 rounded-full " +
+                          (stacks()[project].state == "inactive"
+                            ? "bg-slate-300 opacity-60"
+                            : "bg-green-200")
+                        }
+                      ></span>
+                    </A>
+                  )}
+                </For>
+                <A
+                  class="flex h-7 items-center justify-between rounded px-1 py-0.5 hover:bg-muted"
+                  inactiveClass=""
+                  activeClass="bg-muted"
+                  href={"/new/stack"}
+                >
+                  <span class="flex items-center gap-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="h-4 w-4"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M12 5l0 14" />
+                      <path d="M5 12l14 0" />
+                    </svg>
+                    <p class="overflow-clip">New</p>
+                  </span>
+                </A>
+              </div>
+            </Suspense>
           </ul>
           <ConnectionBadge socketState={socketState} />
         </aside>
-        <div class="overflow-y-auto flex flex-col w-full">{props.children}</div>
+        <div class="flex w-full flex-col overflow-y-auto">{props.children}</div>
       </div>
     </div>
   );
