@@ -52,7 +52,12 @@ func registerApi(app *fiber.App, workspace *stacks.Workspace) *fiber.App {
 		return c.JSON(fiber.Map{
 			"project": project,
 			"compose": compose,
+			"env":     "hi",
 		})
+	})
+
+	api.Get(":project/files", func(c *fiber.Ctx) error {
+		return nil
 	})
 
 	// HACK: Unrestricted write is probably a bad idea. Maybe try some server validation first?

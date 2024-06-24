@@ -11,6 +11,9 @@ importers:
       '@kobalte/core':
         specifier: ^0.13.3
         version: 0.13.3(solid-js@1.8.17)
+      '@monaco-editor/loader':
+        specifier: ^1.4.0
+        version: 1.4.0(monaco-editor@0.50.0)
       '@solid-primitives/refs':
         specifier: ^1.0.8
         version: 1.0.8(solid-js@1.8.17)
@@ -32,12 +35,15 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      monaco-editor:
+        specifier: ^0.50.0
+        version: 0.50.0
       solid-js:
         specifier: ^1.8.17
         version: 1.8.17
       solid-monaco:
         specifier: ^0.2.0
-        version: 0.2.0(monaco-editor@0.43.0)(solid-js@1.8.17)
+        version: 0.2.0(monaco-editor@0.50.0)(solid-js@1.8.17)
       tailwind-merge:
         specifier: ^2.3.0
         version: 2.3.0
@@ -942,8 +948,8 @@ packages:
     resolution: {integrity: sha512-UZ7eQ+h8ywIRAW1hIEl2AqdwzJucU/Kp59+8kkZeSvafXhZjul247BvIJjEVFVeON6d7lM46XX1HXCduKAS8VA==}
     engines: {node: '>=16 || 14 >=14.17'}
 
-  monaco-editor@0.43.0:
-    resolution: {integrity: sha512-cnoqwQi/9fml2Szamv1XbSJieGJ1Dc8tENVMD26Kcfl7xGQWp7OBKMjlwKVGYFJ3/AXJjSOGvcqK7Ry/j9BM1Q==}
+  monaco-editor@0.50.0:
+    resolution: {integrity: sha512-8CclLCmrRRh+sul7C08BmPBP3P8wVWfBHomsTcndxg5NRCEPfu/mc2AGU8k37ajjDVXcXFc12ORAMUkmk+lkFA==}
 
   ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
@@ -1645,9 +1651,9 @@ snapshots:
 
   '@kurkle/color@0.3.2': {}
 
-  '@monaco-editor/loader@1.4.0(monaco-editor@0.43.0)':
+  '@monaco-editor/loader@1.4.0(monaco-editor@0.50.0)':
     dependencies:
-      monaco-editor: 0.43.0
+      monaco-editor: 0.50.0
       state-local: 1.0.7
 
   '@nodelib/fs.scandir@2.1.5':
@@ -2179,7 +2185,7 @@ snapshots:
 
   minipass@7.1.1: {}
 
-  monaco-editor@0.43.0: {}
+  monaco-editor@0.50.0: {}
 
   ms@2.1.2: {}
 
@@ -2342,10 +2348,10 @@ snapshots:
       seroval: 1.0.5
       seroval-plugins: 1.0.5(seroval@1.0.5)
 
-  solid-monaco@0.2.0(monaco-editor@0.43.0)(solid-js@1.8.17):
+  solid-monaco@0.2.0(monaco-editor@0.50.0)(solid-js@1.8.17):
     dependencies:
-      '@monaco-editor/loader': 1.4.0(monaco-editor@0.43.0)
-      monaco-editor: 0.43.0
+      '@monaco-editor/loader': 1.4.0(monaco-editor@0.50.0)
+      monaco-editor: 0.50.0
       solid-js: 1.8.17
 
   solid-presence@0.1.7(solid-js@1.8.17):
