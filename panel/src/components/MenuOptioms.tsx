@@ -16,14 +16,14 @@ export default function MenuOptions(props: MenuOptionsProps) {
       <Match when={props.project}>
         <div class="space-y-1">
           <span class="flex w-full items-center justify-between">
-            <h2 class="text-md font-semibold text-primary">{props.project}</h2>
+            <h2 class="text-md font-semibold">{props.project}</h2>
             <PowerButton project={props.project} />
           </span>
           <A
-            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-muted"
+            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-accent"
             inactiveClass=""
             end
-            activeClass="bg-muted"
+            activeClass="bg-accent"
             href={"/stack/" + props.project}
           >
             <svg
@@ -46,9 +46,9 @@ export default function MenuOptions(props: MenuOptionsProps) {
             <p class="overflow-clip">Home</p>
           </A>
           <A
-            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-muted"
+            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-accent"
             inactiveClass=""
-            activeClass="bg-muted"
+            activeClass="bg-accent"
             href={"/stack/" + props.project + "/services"}
           >
             <svg
@@ -73,9 +73,9 @@ export default function MenuOptions(props: MenuOptionsProps) {
             <p class="overflow-clip">Services</p>
           </A>
           <A
-            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-muted"
+            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-accent"
             inactiveClass=""
-            activeClass="bg-muted"
+            activeClass="bg-accent"
             href={"/stack/" + props.project + "/editor"}
           >
             <svg
@@ -97,9 +97,9 @@ export default function MenuOptions(props: MenuOptionsProps) {
             <p class="overflow-clip">Compose</p>
           </A>
           <A
-            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-muted"
+            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-accent"
             inactiveClass=""
-            activeClass="bg-muted"
+            activeClass="bg-accent"
             href={"/stack/" + props.project + "/console"}
           >
             <svg

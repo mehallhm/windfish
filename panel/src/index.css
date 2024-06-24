@@ -50,46 +50,46 @@
 
   .dark,
   [data-kb-theme="dark"] {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    --background: 210 16.67% 9.41%;
+    --foreground: 208.97 70.73% 91.96%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 212.31 14.94% 17.06%;
+    --muted-foreground: 211.3 14.11% 68.04%;
 
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 216.92 11.71% 21.76%;
+    --accent-foreground: 332 100% 50%;
 
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --popover: var(--secondary);
+    --popover-foreground: var(--foreground);
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
+    --border: 214.29 9.72% 28.24%;
+    --input: 214.29 9.72% 28.24%;
 
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
+    --card: 212.73 18.03% 11.96%;
+    --card-foreground: var(--foreground);
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
+    --primary: 216 46.3% 21.18%;
+    --primary-foreground: 214.14 100% 54.51%;
 
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 212.73 15.49% 13.92%;
+    --secondary-foreground: var(--foreground);
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 336.32 36.54% 20.39%;
+    --destructive-foreground: 340.67 71.29% 40.98%;
 
-    --info: 204 94% 94%;
-    --info-foreground: 199 89% 48%;
+    --info: 205.26 25.33% 14.71%;
+    --info-foreground: 187.06 100% 50%;
 
-    --success: 149 80% 90%;
-    --success-foreground: 160 84% 39%;
+    --success: 162 26.32% 14.9%;
+    --success-foreground: 145.37 77.09% 44.51%;
 
-    --warning: 48 96% 89%;
-    --warning-foreground: 25 95% 53%;
+    --warning: 332 100% 50%;
+    --warning-foreground: 37.21 91.23% 55.29%;
 
-    --error: 0 93% 94%;
-    --error-foreground: 0 84% 60%;
+    --error: 318.75 20.51% 15.29%;
+    --error-foreground: 339.2 90.36% 51.18%;
 
-    --ring: 240 4.9% 83.9%;
+    --ring: var(--primary-foreground);
 
     --radius: 0.5rem;
   }

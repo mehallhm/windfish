@@ -8,12 +8,12 @@ interface ConnectionBadgeProps {
 
 export default function ConnectionBadge(props: ConnectionBadgeProps) {
   return (
-    <div class="space-x-2 flex items-center">
+    <div class="flex items-center space-x-2">
       <p>Status:</p>
       {props.socketState() == "CONNECTING" ? (
         <span class="badge badge-ghost">Connecting...</span>
       ) : props.socketState() == "OPEN" ? (
-        <span class="rounded bg-success px-1 text-xs text-green-700 font-semibold">
+        <span class="rounded bg-success px-1 text-xs font-semibold text-success-foreground">
           Connected
         </span>
       ) : props.socketState() == "CLOSING" ? (

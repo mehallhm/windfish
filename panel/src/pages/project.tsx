@@ -1,7 +1,41 @@
 import { useParams } from "@solidjs/router";
-import { ChartData } from "chart.js";
+import { ChartData, ChartOptions } from "chart.js";
 import { createSignal, onCleanup } from "solid-js";
 import { LineChart } from "~/components/ui/Charts";
+
+const chartOptions: ChartOptions = {
+  maintainAspectRatio: false,
+  scales: {
+    x: {
+      ticks: {
+        display: false,
+      },
+    },
+    y: {
+      beginAtZero: true,
+      // max: 1,
+    },
+  },
+  hover: {
+    mode: "nearest",
+    intersect: true,
+  },
+  elements: {
+    point: {
+      radius: 0,
+    },
+  },
+  plugins: {
+    title: {
+      display: true,
+      text: "CPU Usage",
+    },
+    tooltip: {
+      mode: "index",
+      intersect: false,
+    },
+  },
+};
 
 export default function Page() {
   const params = useParams<{ project: string }>();
@@ -66,74 +100,12 @@ export default function Page() {
 
   return (
     <div class="w-full space-y-4 p-8">
-      <h2 class="text-2xl font-semibold text-primary">{params.project}</h2>
+      <h2 class="text-2xl font-semibold">{params.project}</h2>
       <div class="h-64 w-full">
-        <LineChart
-          data={chartData()}
-          options={{
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                ticks: {
-                  display: false,
-                },
-              },
-              y: {
-                beginAtZero: true,
-                // max: 1,
-              },
-            },
-            hover: {
-              mode: "nearest",
-              intersect: true,
-            },
-            elements: {
-              point: {
-                radius: 0,
-              },
-            },
-            plugins: {
-              title: {
-                display: true,
-                text: "CPU Usage",
-              },
-              tooltip: {
-                mode: "index",
-                intersect: false,
-              },
-            },
-          }}
-        />
+        <LineChart data={chartData()} options={chartOptions} />
       </div>
       <div class="h-64 w-full">
-        <LineChart
-          data={memChartData()}
-          options={{
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                ticks: {
-                  display: false,
-                },
-              },
-              y: {
-                beginAtZero: true,
-                // max: 1,
-              },
-            },
-            elements: {
-              point: {
-                radius: 0,
-              },
-            },
-            plugins: {
-              title: {
-                display: true,
-                text: "CPU Usage",
-              },
-            },
-          }}
-        />
+        <LineChart data={memChartData()} options={chartOptions} />
       </div>
     </div>
   );

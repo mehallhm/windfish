@@ -52,7 +52,7 @@ const App: Component<AppProps> = (props: AppProps) => {
   return (
     <div class="flex h-screen w-full flex-col font-rubik">
       <div class="flex h-full">
-        <aside class="sticky flex w-52 select-none flex-col gap-1 border-r p-2 text-sm">
+        <aside class="sticky flex w-64 select-none flex-col gap-1 bg-secondary p-2 text-sm">
           <A class="mb-4 flex items-center gap-1" href="/">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +77,9 @@ const App: Component<AppProps> = (props: AppProps) => {
           <MenuOptions project={params.project} />
           <ul class="bg-base-200 text-base-content mb-auto mt-4">
             <Suspense fallback={<p>loading...</p>}>
-              <h3 class="text-md font-semibold">All Stacks</h3>
+              <h3 class="text-md font-semibold text-muted-foreground">
+                All Stacks
+              </h3>
               <div class="space-y-1">
                 <For
                   each={Object.keys(stacks() ?? {})}
@@ -86,9 +88,9 @@ const App: Component<AppProps> = (props: AppProps) => {
                   {(project, index) => (
                     <A
                       data-index={index()}
-                      class="flex h-7 items-center justify-between rounded px-1 py-0.5 hover:bg-muted"
+                      class="group flex h-7 items-center justify-between rounded px-1 py-0.5 hover:bg-accent"
                       inactiveClass=""
-                      activeClass="bg-muted"
+                      activeClass="bg-accent"
                       href={"/stack/" + project}
                     >
                       <span class="flex items-center gap-1">
@@ -115,15 +117,15 @@ const App: Component<AppProps> = (props: AppProps) => {
                         class={
                           "h-2 w-2 rounded-full " +
                           (stacks()[project].state == "inactive"
-                            ? "bg-slate-300 opacity-60"
-                            : "bg-green-200")
+                            ? "bg-accent group-hover:bg-muted"
+                            : "bg-success-foreground")
                         }
                       ></span>
                     </A>
                   )}
                 </For>
                 <A
-                  class="flex h-7 items-center justify-between rounded px-1 py-0.5 hover:bg-muted"
+                  class="flex h-7 items-center justify-between rounded px-1 py-0.5 hover:bg-primary hover:text-primary-foreground"
                   inactiveClass=""
                   activeClass="bg-muted"
                   href={"/new/stack"}
