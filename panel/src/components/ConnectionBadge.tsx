@@ -19,7 +19,9 @@ export default function ConnectionBadge(props: ConnectionBadgeProps) {
       ) : props.socketState() == "CLOSING" ? (
         <span class="badge badge-error">Closing...</span>
       ) : (
-        <span class="badge badge-error">Disconnected</span>
+        <span class="rounded bg-error px-1 text-xs font-semibold text-error-foreground">
+          Disconnected
+        </span>
       )}
     </div>
   );
