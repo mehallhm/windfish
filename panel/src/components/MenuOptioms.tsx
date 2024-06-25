@@ -20,7 +20,7 @@ export default function MenuOptions(props: MenuOptionsProps) {
             <PowerButton project={props.project} />
           </span>
           <A
-            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-accent"
+            class="flex h-7 items-center gap-2 rounded px-1 py-0.5 hover:bg-accent"
             inactiveClass=""
             end
             activeClass="bg-accent"
@@ -46,7 +46,7 @@ export default function MenuOptions(props: MenuOptionsProps) {
             <p class="overflow-clip">Home</p>
           </A>
           <A
-            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-accent"
+            class="flex h-7 items-center gap-2 rounded px-1 py-0.5 hover:bg-accent"
             inactiveClass=""
             activeClass="bg-accent"
             href={"/stack/" + props.project + "/services"}
@@ -73,7 +73,7 @@ export default function MenuOptions(props: MenuOptionsProps) {
             <p class="overflow-clip">Services</p>
           </A>
           <A
-            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-accent"
+            class="flex h-7 items-center gap-2 rounded px-1 py-0.5 hover:bg-accent"
             inactiveClass=""
             activeClass="bg-accent"
             href={"/stack/" + props.project + "/editor"}
@@ -97,7 +97,7 @@ export default function MenuOptions(props: MenuOptionsProps) {
             <p class="overflow-clip">Compose</p>
           </A>
           <A
-            class="flex h-7 items-center gap-1 rounded px-1 py-0.5 hover:bg-accent"
+            class="flex h-7 items-center gap-2 rounded px-1 py-0.5 hover:bg-accent"
             inactiveClass=""
             activeClass="bg-accent"
             href={"/stack/" + props.project + "/console"}

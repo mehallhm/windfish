@@ -13,6 +13,9 @@ import { A, useParams } from "@solidjs/router";
 import ConnectionBadge from "./components/ConnectionBadge";
 import { Separator } from "./components/ui/Separator";
 import MenuOptions from "./components/MenuOptioms";
+import Logo from "./components/Logo";
+import SidebarEntry from "./components/sidebar/SidebarEntry";
+import { StackIcon } from "./components/Icons";
 
 async function getStacks() {
   const res = await fetch(import.meta.env.VITE_SERVER_URL + "/api/status");
@@ -53,27 +56,7 @@ const App: Component<AppProps> = (props: AppProps) => {
     <div class="flex h-screen w-full flex-col font-rubik">
       <div class="flex h-full">
         <aside class="sticky flex w-64 select-none flex-col gap-1 bg-secondary p-2 text-sm">
-          <A class="mb-4 flex items-center gap-1" href="/">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="h-6 w-6"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M6 21h6" />
-              <path d="M9 21v-18l-6 6h18" />
-              <path d="M9 3l10 6" />
-              <path d="M17 9v4a2 2 0 1 1 -2 2" />
-            </svg>
-            <h2 class="text-lg font-bold">Panamax</h2>
-          </A>
+          <Logo />
           <MenuOptions project={params.project} />
           <ul class="bg-base-200 text-base-content mb-auto mt-4">
             <Suspense fallback={<p>loading...</p>}>
@@ -85,32 +68,10 @@ const App: Component<AppProps> = (props: AppProps) => {
                   each={Object.keys(stacks() ?? {})}
                   fallback={<div>No items</div>}
                 >
-                  {(project, index) => (
-                    <A
-                      data-index={index()}
-                      class="group flex h-7 items-center justify-between rounded px-1 py-0.5 hover:bg-accent"
-                      inactiveClass=""
-                      activeClass="bg-accent"
-                      href={"/stack/" + project}
-                    >
-                      <span class="flex items-center gap-1">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="h-4 w-4"
-                        >
-                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                          <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
-                          <path d="M4 12l8 4l8 -4" />
-                          <path d="M4 16l8 4l8 -4" />
-                        </svg>
+                  {(project) => (
+                    <SidebarEntry href={"/stack/" + project}>
+                      <span class="flex items-center gap-2">
+                        <StackIcon class="h-4 w-4" />
                         <p class="overflow-clip">{project}</p>
                       </span>
                       <span
@@ -121,16 +82,11 @@ const App: Component<AppProps> = (props: AppProps) => {
                             : "bg-success-foreground")
                         }
                       ></span>
-                    </A>
+                    </SidebarEntry>
                   )}
                 </For>
-                <A
-                  class="flex h-7 items-center justify-between rounded px-1 py-0.5 hover:bg-primary hover:text-primary-foreground"
-                  inactiveClass=""
-                  activeClass="bg-muted"
-                  href={"/new/stack"}
-                >
-                  <span class="flex items-center gap-1">
+                <SidebarEntry href="/new/stack" varient="primary">
+                  <span class="flex items-center gap-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -149,7 +105,7 @@ const App: Component<AppProps> = (props: AppProps) => {
                     </svg>
                     <p class="overflow-clip">New</p>
                   </span>
-                </A>
+                </SidebarEntry>
               </div>
             </Suspense>
           </ul>

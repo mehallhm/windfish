@@ -4,6 +4,14 @@ import { MonacoEditor } from "solid-monaco";
 import { editor } from "monaco-editor";
 import { Monaco } from "@monaco-editor/loader";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/Tabs";
+import { Button } from "~/components/ui/Button";
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+} from "~/components/ui/Dropdown";
+import { Separator } from "~/components/ui/Separator";
 
 async function getCompose(project: string) {
   const res = await fetch(
@@ -52,30 +60,48 @@ export default function EditorTab() {
     <div class="w-full space-y-4 p-8">
       <h2 class="text-2xl font-semibold">Files</h2>
       <Suspense fallback={<p>loading...</p>}>
-        <Tabs defaultValue="compose" class="w-full">
-          <TabsList>
-            <TabsTrigger
-              value="compose"
-              onClick={() => {
-                editorInstance()?.saveViewState();
-                editorInstance()?.setModel(models()[0]);
-                editorInstance()?.restoreViewState();
-              }}
-            >
-              Compose
-            </TabsTrigger>
-            <TabsTrigger
-              value="env"
-              onClick={() => {
-                editorInstance()?.saveViewState();
-                editorInstance()?.setModel(models()[1]);
-                editorInstance()?.restoreViewState();
-              }}
-            >
-              Environment Variables
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <div class="flex w-full justify-between">
+          <Tabs defaultValue="compose" class="w-full">
+            <TabsList>
+              <TabsTrigger
+                value="compose"
+                onClick={() => {
+                  editorInstance()?.saveViewState();
+                  editorInstance()?.setModel(models()[0]);
+                  editorInstance()?.restoreViewState();
+                }}
+              >
+                Compose
+              </TabsTrigger>
+              <TabsTrigger
+                value="env"
+                onClick={() => {
+                  editorInstance()?.saveViewState();
+                  editorInstance()?.setModel(models()[1]);
+                  editorInstance()?.restoreViewState();
+                }}
+              >
+                Environment Variables
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button variant="outline" class="select-none">
+                Save
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Save and Restart Stack</DropdownMenuItem>
+              <DropdownMenuItem>Save</DropdownMenuItem>
+              <Separator />
+              <DropdownMenuItem class="bg-error text-destructive-foreground focus:bg-destructive focus:text-error-foreground">
+                Revert Changes
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
         <div class="h-96 rounded bg-card">
           <MonacoEditor
             language="yaml"
