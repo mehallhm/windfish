@@ -27,12 +27,7 @@ type ContainerState struct {
 }
 
 // NewWorkspace creates an empty Workspace
-func NewWorkspace(name string, path string) *Workspace {
-	cli, err := client.NewClientWithOpts(client.WithHostFromEnv())
-	if err != nil {
-		panic(err)
-	}
-
+func NewWorkspace(name string, path string, cli *client.Client) *Workspace {
 	return &Workspace{
 		Name:         name,
 		Path:         path,

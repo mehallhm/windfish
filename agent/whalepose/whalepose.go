@@ -15,7 +15,7 @@ type Stack struct {
 }
 
 func (s *Stack) Logs(ctx context.Context) ([]string, error) {
-	out, err := composeCommand(ctx, s.Name, s.Path, "logs", "-t", "-n", "100")
+	out, err := streamingComposeCommand(ctx, s.Name, s.Path, "logs", "-t", "-n", "100")
 	if err != nil {
 		return nil, err
 	}
@@ -30,10 +30,10 @@ func (s *Stack) Logs(ctx context.Context) ([]string, error) {
 }
 
 func (s *Stack) StreamLogs(ctx context.Context) (<-chan []byte, error) {
-	return composeCommand(ctx, s.Name, s.Path, "logs", "-f", "-t")
+	return streamingComposeCommand(ctx, s.Name, s.Path, "logs", "-f", "-t")
 }
 
-func composeCommand(ctx context.Context, project string, path string, args ...string) (<-chan []byte, error) {
+func streamingComposeCommand(ctx context.Context, project string, path string, args ...string) (<-chan []byte, error) {
 	args = append([]string{"compose"}, args...)
 	cmd := exec.CommandContext(ctx, "docker", args...)
 	cmd.Dir = filepath.Join(path, project)

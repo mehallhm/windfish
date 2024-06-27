@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/lmittmann/tint"
+	"github.com/mehallhm/panamax/manager"
 	"github.com/mehallhm/panamax/router"
 	"github.com/mehallhm/panamax/stacks"
 )
@@ -25,9 +26,17 @@ func main() {
 
 	slog.Info("Panamax agent started")
 
+	slog.Debug("creating manager")
+	manager, err := manager.NewManager(stacksPath)
+	if err != nil {
+		slog.Error("error creating manager", "error", err)
+		return
+	}
+	slog.Debug("finished creating manager")
+
 	slog.Debug("Creating workspace")
-	workspace := stacks.NewWorkspace("", stacksPath)
-	err := workspace.ReadStacks()
+	workspace := stacks.NewWorkspace("", stacksPath, manager.Cli)
+	err = workspace.ReadStacks()
 	if err != nil {
 		slog.Error("Error reading stacks", "error", err)
 		panic(err)
