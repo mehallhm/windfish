@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log/slog"
 	"os"
 	"time"
@@ -27,7 +28,8 @@ func main() {
 	slog.Info("Panamax agent started")
 
 	slog.Debug("creating manager")
-	manager, err := manager.NewManager(stacksPath)
+	ctx := context.Background()
+	manager, err := manager.NewManager(stacksPath, ctx)
 	if err != nil {
 		slog.Error("error creating manager", "error", err)
 		return

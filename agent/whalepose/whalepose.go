@@ -62,7 +62,7 @@ func streamingComposeCommand(ctx context.Context, project string, path string, a
 	go func() {
 		defer close(output)
 		// BUG: If information is only printed to stderr and not stdout then the multireader will be waiting
-		// for stdout before if checks stderr
+		// for stdout before it checks stderr
 		scanner := bufio.NewScanner(io.MultiReader(outPipe, errPipe))
 		scanner.Split(bufio.ScanLines)
 		for scanner.Scan() {
