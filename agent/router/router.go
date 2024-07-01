@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 
+	"github.com/mehallhm/panamax/manager"
 	"github.com/mehallhm/panamax/stacks"
 )
 
@@ -29,8 +30,8 @@ func Setup(allowedOrigins string, allowedHeaders string) *fiber.App {
 	return app
 }
 
-func Register(app *fiber.App, workspace *stacks.Workspace) *fiber.App {
-	app = registerApi(app, workspace)
+func Register(app *fiber.App, workspace *stacks.Workspace, manager *manager.Manager) *fiber.App {
+	app = registerApi(app, workspace, manager)
 	app = registerWebsockets(app, workspace)
 
 	app = registerPanel(app)

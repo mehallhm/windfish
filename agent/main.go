@@ -47,7 +47,7 @@ func main() {
 
 	slog.Debug("Registering routes...")
 	app := router.Setup("*", "*")
-	app = router.Register(app, workspace)
+	app = router.Register(app, workspace, manager)
 	slog.Debug("Finished registering routes")
 
 	slog.Debug("Listening...")

@@ -2,10 +2,11 @@ package router
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/mehallhm/panamax/manager"
 	"github.com/mehallhm/panamax/stacks"
 )
 
-func registerApi(app *fiber.App, workspace *stacks.Workspace) *fiber.App {
+func registerApi(app *fiber.App, workspace *stacks.Workspace, m *manager.Manager) *fiber.App {
 	api := app.Group("/api")
 
 	api = registerLogEndpoints(api, workspace)
@@ -94,6 +95,18 @@ func registerApi(app *fiber.App, workspace *stacks.Workspace) *fiber.App {
 		project := c.Params("project")
 		err := workspace.StreamingStop(project)
 		return err
+	})
+
+	api.Get("/networks", func(c *fiber.Ctx) error {
+		networks, err := m.NetworksList()
+		if err != nil {
+			return &fiber.Error{
+				Code:    500,
+				Message: "Unable to get networks",
+			}
+		}
+
+		return c.JSON(networks)
 	})
 
 	return app

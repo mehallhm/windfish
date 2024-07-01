@@ -11,7 +11,9 @@ export default function MenuOptions(props: MenuOptionsProps) {
   return (
     <Switch>
       <Match when={!props.project}>
-        <p class="w-full text-center">Select a stack</p>
+        <p class="w-full rounded border border-dashed p-2 text-center">
+          Select a stack
+        </p>
       </Match>
       <Match when={props.project}>
         <div class="space-y-1">

@@ -14,26 +14,36 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-const Index = lazy(() => import("./pages/index"));
-const Project = lazy(() => import("./pages/project"));
+const Index = lazy(() => import("./routes/index"));
 
-const Services = lazy(() => import("./pages/Services"));
-const Editor = lazy(() => import("./pages/Editor"));
-const Console = lazy(() => import("./pages/console"));
+const Containers = lazy(() => import("./routes/Containers"));
+const Stacks = lazy(() => import("./routes/Stacks"));
+const Networks = lazy(() => import("./routes/Networks"));
+const Volumes = lazy(() => import("./routes/Volumes"));
 
-const NewStack = lazy(() => import("./pages/NewStack"));
+const Project = lazy(() => import("./routes/stacks/Project"));
+const Services = lazy(() => import("./routes/stacks/Services"));
+const Editor = lazy(() => import("./routes/stacks/Editor"));
+const Console = lazy(() => import("./routes/stacks/Console"));
+
+const NewStack = lazy(() => import("./routes/NewStack"));
 
 render(
   () => (
     <Router root={App}>
       <Route path="/" component={Index} />
 
-      <Route path={"/stack/:project"} component={Project} />
-      <Route path={"/stack/:project/services"} component={Services} />
-      <Route path={"/stack/:project/editor"} component={Editor} />
-      <Route path={"/stack/:project/console"} component={Console} />
+      <Route path="/containers" component={Containers} />
+      <Route path="/stacks" component={Stacks} />
+      <Route path="/networks" component={Networks} />
+      <Route path="/volumes" component={Volumes} />
 
-      <Route path={"/new/stack"} component={NewStack} />
+      <Route path="/stack/:project" component={Project} />
+      <Route path="/stack/:project/services" component={Services} />
+      <Route path="/stack/:project/editor" component={Editor} />
+      <Route path="/stack/:project/console" component={Console} />
+
+      <Route path="/new/stack" component={NewStack} />
     </Router>
   ),
   root!,
