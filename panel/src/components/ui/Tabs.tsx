@@ -80,7 +80,7 @@ const TabsIndicator = <T extends ValidComponent = "div">(
   return (
     <TabsPrimitive.Indicator
       class={cn(
-        "duration-250ms absolute transition-all data-[orientation=horizontal]:-bottom-px data-[orientation=vertical]:-right-px data-[orientation=horizontal]:h-[2px] data-[orientation=vertical]:w-[2px]",
+        "duration-250ms absolute bg-primary transition-all data-[orientation=horizontal]:-bottom-px data-[orientation=vertical]:-right-px data-[orientation=horizontal]:h-[2px] data-[orientation=vertical]:w-[2px]",
         local.class,
       )}
       {...others}

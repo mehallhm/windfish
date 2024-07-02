@@ -29,7 +29,6 @@ interface AppProps {
 type WSState = "CONNECTING" | "OPEN" | "CLOSING" | "CLOSED";
 
 const App: Component<AppProps> = (props: AppProps) => {
-  const [stacks] = createResource(getStacks);
   const params = useParams();
 
   const [socketState, setSocketState] = createSignal<WSState>("CONNECTING");
@@ -107,58 +106,7 @@ const App: Component<AppProps> = (props: AppProps) => {
             Selected Stack
           </h3>
           <MenuOptions project={params.project} />
-
-          <ul class="bg-base-200 text-base-content mb-auto mt-4">
-            <Suspense fallback={<p>loading...</p>}>
-              <h3 class="text-md font-semibold text-muted-foreground">
-                All Stacks
-              </h3>
-              <div class="space-y-1">
-                <For
-                  each={Object.keys(stacks() ?? {})}
-                  fallback={<div>No items</div>}
-                >
-                  {(project) => (
-                    <SidebarEntry href={"/stack/" + project}>
-                      <span class="flex items-center gap-2">
-                        <StackIcon class="h-4 w-4" />
-                        <p class="overflow-clip">{project}</p>
-                      </span>
-                      <span
-                        class={
-                          "h-2 w-2 rounded-full " +
-                          (stacks()[project].state == "inactive"
-                            ? "bg-accent group-hover:bg-muted"
-                            : "bg-success-foreground")
-                        }
-                      ></span>
-                    </SidebarEntry>
-                  )}
-                </For>
-                <SidebarEntry href="/new/stack" varient="primary">
-                  <span class="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="h-4 w-4"
-                    >
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M12 5l0 14" />
-                      <path d="M5 12l14 0" />
-                    </svg>
-                    <p class="overflow-clip">New</p>
-                  </span>
-                </SidebarEntry>
-              </div>
-            </Suspense>
-          </ul>
+          <span class="mb-auto"></span>
 
           <ConnectionBadge socketState={socketState} />
         </aside>
