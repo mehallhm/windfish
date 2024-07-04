@@ -14,7 +14,7 @@ export default function Page() {
           {(project) => (
             <a
               class="flex items-center gap-2 rounded border p-2"
-              href={"/stack/" + project}
+              href={"/deployments/" + project}
             >
               <span
                 class={

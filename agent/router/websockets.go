@@ -6,15 +6,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"log/slog"
 
 	moby "github.com/docker/docker/api/types"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/mehallhm/panamax/events"
+	"github.com/mehallhm/panamax/manager"
 	"github.com/mehallhm/panamax/stacks"
 )
 
-func registerWebsockets(app *fiber.App, workspace *stacks.Workspace) *fiber.App {
+func registerWebsockets(app *fiber.App, workspace *stacks.Workspace, manager *manager.Manager) *fiber.App {
 	ws := app.Group("/ws")
 
 	ws.Get("/events", websocket.New(func(c *websocket.Conn) {
@@ -109,6 +111,55 @@ func registerWebsockets(app *fiber.App, workspace *stacks.Workspace) *fiber.App 
 			}
 		}
 
+	}))
+
+	ws.Get("/stacks/logs/:project", websocket.New(func(c *websocket.Conn) {
+		project := c.Params("project")
+		ctx, cancel := context.WithCancel(context.Background())
+
+		c.SetCloseHandler(func(code int, text string) error {
+			cancel()
+			slog.Debug("closing connection")
+			return nil
+		})
+
+		go func(c *websocket.Conn) {
+			var (
+				mt  int
+				msg []byte
+				err error
+			)
+
+			for {
+				select {
+				case <-ctx.Done():
+					slog.Debug("reader stopped")
+					return
+				default:
+					if mt, msg, err = c.ReadMessage(); err != nil {
+						// BUG: Ignore websocket close 1005 error (expected)
+						slog.Error("read error while streaming logs", "error", err)
+						break
+					}
+					log.Printf("recv: %s with mt %d", msg, mt)
+				}
+			}
+		}(c)
+
+		logs, err := manager.ComposeLogs(ctx)
+		if err != nil {
+			panic(err)
+		}
+
+		for log := range logs {
+			err := c.WriteJSON(&fiber.Map{
+				"stack": project,
+				"log":   string(log),
+			})
+			if err != nil {
+				slog.Error("error write logs", "error", err)
+			}
+		}
 	}))
 
 	return app

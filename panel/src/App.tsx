@@ -54,7 +54,7 @@ const App: Component<AppProps> = (props: AppProps) => {
   return (
     <div class="flex h-screen w-full flex-col font-rubik">
       <div class="flex h-full">
-        <aside class="sticky flex w-64 select-none flex-col gap-1 bg-secondary p-2 text-sm">
+        <aside class="sticky flex w-64 select-none flex-col gap-1 border-r p-2 text-sm">
           <Logo />
 
           <h3 class="text-md font-semibold text-muted-foreground">Host</h3>
@@ -82,10 +82,10 @@ const App: Component<AppProps> = (props: AppProps) => {
                 <p class="overflow-clip">Containers</p>
               </span>
             </SidebarEntry>
-            <SidebarEntry href="/stacks" varient="default">
+            <SidebarEntry href="/deployments" varient="default">
               <span class="flex items-center gap-2">
                 <StackIcon class="h-4 w-4" />
-                <p class="overflow-clip">Stacks</p>
+                <p class="overflow-clip">Deployments</p>
               </span>
             </SidebarEntry>
             <SidebarEntry href="/networks" varient="default">

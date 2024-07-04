@@ -27,7 +27,9 @@ export default function Layout(props: Props) {
             <TabsTrigger
               value="home"
               class="w-28 gap-1"
-              as={(props) => <A href={"/stack/" + params.project} {...props} />}
+              as={(props) => (
+                <A href={"/deployments/" + params.project} {...props} />
+              )}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -52,7 +54,10 @@ export default function Layout(props: Props) {
               value="services"
               class="w-28 gap-1"
               as={(props) => (
-                <A href={"/stack/" + params.project + "/services"} {...props} />
+                <A
+                  href={"/deployments/" + params.project + "/services"}
+                  {...props}
+                />
               )}
             >
               <svg
@@ -80,7 +85,10 @@ export default function Layout(props: Props) {
               value="editor"
               class="w-28 gap-1"
               as={(props) => (
-                <A href={"/stack/" + params.project + "/editor"} {...props} />
+                <A
+                  href={"/deployments/" + params.project + "/editor"}
+                  {...props}
+                />
               )}
             >
               <svg
@@ -102,10 +110,13 @@ export default function Layout(props: Props) {
               Editor
             </TabsTrigger>
             <TabsTrigger
-              value="console"
+              value="logs"
               class="w-28 gap-1"
               as={(props) => (
-                <A href={"/stack/" + params.project + "/console"} {...props} />
+                <A
+                  href={"/deployments/" + params.project + "/logs"}
+                  {...props}
+                />
               )}
             >
               <svg
@@ -121,11 +132,17 @@ export default function Layout(props: Props) {
                 class="h-4 w-4"
               >
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M8 9l3 3l-3 3" />
-                <path d="M13 15l3 0" />
-                <path d="M3 4m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                <path d="M4 12h.01" />
+                <path d="M4 6h.01" />
+                <path d="M4 18h.01" />
+                <path d="M8 18h2" />
+                <path d="M8 12h2" />
+                <path d="M8 6h2" />
+                <path d="M14 6h6" />
+                <path d="M14 12h6" />
+                <path d="M14 18h6" />
               </svg>
-              Console
+              Logs
             </TabsTrigger>
           </TabsList>
         </Tabs>

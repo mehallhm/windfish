@@ -17,16 +17,17 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 const Index = lazy(() => import("./routes/index"));
 
 const Containers = lazy(() => import("./routes/Containers"));
-const Stacks = lazy(() => import("./routes/Stacks"));
+const Deployments = lazy(() => import("./routes/Deployments"));
 const Networks = lazy(() => import("./routes/Networks"));
 const Volumes = lazy(() => import("./routes/Volumes"));
 
-const StackLayout = lazy(() => import("./routes/stacks/Layout"));
+const StackLayout = lazy(() => import("./routes/deployments/Layout"));
 
-const Project = lazy(() => import("./routes/stacks/Project"));
-const Services = lazy(() => import("./routes/stacks/Services"));
-const Editor = lazy(() => import("./routes/stacks/Editor"));
-const Console = lazy(() => import("./routes/stacks/Console"));
+const Project = lazy(() => import("./routes/deployments/Project"));
+const Services = lazy(() => import("./routes/deployments/Services"));
+const Editor = lazy(() => import("./routes/deployments/Editor"));
+const Console = lazy(() => import("./routes/deployments/Console"));
+const Logs = lazy(() => import("./routes/deployments/Logs"));
 
 const NewStack = lazy(() => import("./routes/NewStack"));
 
@@ -36,15 +37,16 @@ render(
       <Route path="/" component={Index} />
 
       <Route path="/containers" component={Containers} />
-      <Route path="/stacks" component={Stacks} />
+      <Route path="/deployments" component={Deployments} />
       <Route path="/networks" component={Networks} />
       <Route path="/volumes" component={Volumes} />
 
-      <Route path="/stack/:project" component={StackLayout}>
+      <Route path="/deployments/:project" component={StackLayout}>
         <Route path="/" component={Project} />
         <Route path="/services" component={Services} />
         <Route path="/editor" component={Editor} />
         <Route path="/console" component={Console} />
+        <Route path="/logs" component={Logs} />
       </Route>
 
       <Route path="/new/stack" component={NewStack} />

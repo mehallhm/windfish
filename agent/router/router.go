@@ -32,7 +32,7 @@ func Setup(allowedOrigins string, allowedHeaders string) *fiber.App {
 
 func Register(app *fiber.App, workspace *stacks.Workspace, manager *manager.Manager) *fiber.App {
 	app = registerApi(app, workspace, manager)
-	app = registerWebsockets(app, workspace)
+	app = registerWebsockets(app, workspace, manager)
 
 	app = registerPanel(app)
 
