@@ -1,14 +1,8 @@
 import { useParams } from "@solidjs/router";
 import { ChartData, ChartOptions } from "chart.js";
 import { createSignal, onCleanup } from "solid-js";
+import MenuOptions from "~/components/MenuOptioms";
 import { LineChart } from "~/components/ui/Charts";
-import {
-  Tabs,
-  TabsContent,
-  TabsIndicator,
-  TabsList,
-  TabsTrigger,
-} from "~/components/ui/Tabs";
 
 const chartOptions: ChartOptions = {
   maintainAspectRatio: false,
@@ -106,25 +100,14 @@ export default function Page() {
   // onCleanup(() => socket.close());
 
   return (
-    <div class="w-full space-y-4 p-8">
+    <>
       <h2 class="text-2xl font-semibold">{params.project}</h2>
-      <Tabs>
-        <TabsList class="grid grid-cols-3">
-          <TabsIndicator />
-          <TabsTrigger value="1">Long Title 1</TabsTrigger>
-          <TabsTrigger value="2">Long Title 2</TabsTrigger>
-          <TabsTrigger value="3">Long Title 3</TabsTrigger>
-        </TabsList>
-        <TabsContent value="1">1</TabsContent>
-        <TabsContent value="2">2</TabsContent>
-        <TabsContent value="3">3</TabsContent>
-      </Tabs>
       {/* <div class="h-64 w-full"> */}
       {/*   <LineChart data={chartData()} options={chartOptions} /> */}
       {/* </div> */}
       {/* <div class="h-64 w-full"> */}
       {/*   <LineChart data={memChartData()} options={chartOptions} /> */}
       {/* </div> */}
-    </div>
+    </>
   );
 }

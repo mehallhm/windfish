@@ -102,10 +102,6 @@ const App: Component<AppProps> = (props: AppProps) => {
             </SidebarEntry>
           </div>
 
-          <h3 class="text-md font-semibold text-muted-foreground">
-            Selected Stack
-          </h3>
-          <MenuOptions project={params.project} />
           <span class="mb-auto"></span>
 
           <ConnectionBadge socketState={socketState} />

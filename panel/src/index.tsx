@@ -21,6 +21,8 @@ const Stacks = lazy(() => import("./routes/Stacks"));
 const Networks = lazy(() => import("./routes/Networks"));
 const Volumes = lazy(() => import("./routes/Volumes"));
 
+const StackLayout = lazy(() => import("./routes/stacks/Layouts"));
+
 const Project = lazy(() => import("./routes/stacks/Project"));
 const Services = lazy(() => import("./routes/stacks/Services"));
 const Editor = lazy(() => import("./routes/stacks/Editor"));
@@ -38,10 +40,12 @@ render(
       <Route path="/networks" component={Networks} />
       <Route path="/volumes" component={Volumes} />
 
-      <Route path="/stack/:project" component={Project} />
-      <Route path="/stack/:project/services" component={Services} />
-      <Route path="/stack/:project/editor" component={Editor} />
-      <Route path="/stack/:project/console" component={Console} />
+      <Route path="/stack/:project" component={StackLayout}>
+        <Route path="/" component={Project} />
+        <Route path="/services" component={Services} />
+        <Route path="/editor" component={Editor} />
+        <Route path="/console" component={Console} />
+      </Route>
 
       <Route path="/new/stack" component={NewStack} />
     </Router>

@@ -14,7 +14,7 @@ export default function PowerButton(props: PowerButtonProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Button size="miniicon" variant="outline">
+        <Button size="icon" variant="outline">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -25,7 +25,7 @@ export default function PowerButton(props: PowerButtonProps) {
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            class="h-4 w-4"
+            class="h-5 w-5"
           >
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path d="M7 6a7.75 7.75 0 1 0 10 0" />

@@ -57,7 +57,7 @@ export default function EditorTab() {
   }
 
   return (
-    <div class="w-full space-y-4 p-8">
+    <>
       <h2 class="text-2xl font-semibold">Files</h2>
       <Suspense fallback={<p>loading...</p>}>
         <div class="flex w-full justify-between">
@@ -116,6 +116,6 @@ export default function EditorTab() {
           />
         </div>
       </Suspense>
-    </div>
+    </>
   );
 }

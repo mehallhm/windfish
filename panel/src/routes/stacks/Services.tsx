@@ -14,17 +14,25 @@ export default function ServicesComp() {
   const [compose] = createResource(() => params.project, getCompose);
 
   return (
-    <div class="w-full space-y-4 p-8">
+    <>
       <h2 class="text-2xl font-semibold">Services</h2>
-      <Suspense fallback={<p>loading...</p>}>
+      <Suspense
+        fallback={
+          <div class="flex h-28 animate-pulse flex-col gap-2 rounded bg-secondary p-4">
+            <span class="h-6 w-32 rounded-full bg-neutral-200"></span>
+            <span class="h-4 w-64 rounded-full bg-neutral-200"></span>
+            <span class="h-4 w-48 rounded-full bg-neutral-200"></span>
+          </div>
+        }
+      >
         <For each={Object.keys(compose() ?? {})}>
           {(c) => (
-            <div class="flex flex-col gap-1 rounded bg-secondary p-4">
+            <div class="flex h-28 flex-col gap-1 rounded bg-secondary p-4">
               <p class="text-xl">{c}</p>
               <p class="text-muted-foreground">Image: {compose()[c].image}</p>
               <Show
                 when={compose()[c].status === "running"}
-                fallback={<p class="badge badge-ghost">N/A</p>}
+                fallback={<p class="">N/A</p>}
               >
                 <p class="">{compose()[c].status}</p>
               </Show>
@@ -32,6 +40,6 @@ export default function ServicesComp() {
           )}
         </For>
       </Suspense>
-    </div>
+    </>
   );
 }
