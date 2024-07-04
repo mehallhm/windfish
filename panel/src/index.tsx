@@ -21,7 +21,7 @@ const Stacks = lazy(() => import("./routes/Stacks"));
 const Networks = lazy(() => import("./routes/Networks"));
 const Volumes = lazy(() => import("./routes/Volumes"));
 
-const StackLayout = lazy(() => import("./routes/stacks/Layouts"));
+const StackLayout = lazy(() => import("./routes/stacks/Layout"));
 
 const Project = lazy(() => import("./routes/stacks/Project"));
 const Services = lazy(() => import("./routes/stacks/Services"));

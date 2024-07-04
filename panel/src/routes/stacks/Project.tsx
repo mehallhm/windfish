@@ -101,7 +101,6 @@ export default function Page() {
 
   return (
     <>
-      <h2 class="text-2xl font-semibold">{params.project}</h2>
       {/* <div class="h-64 w-full"> */}
       {/*   <LineChart data={chartData()} options={chartOptions} /> */}
       {/* </div> */}

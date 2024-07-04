@@ -58,7 +58,6 @@ export default function EditorTab() {
 
   return (
     <>
-      <h2 class="text-2xl font-semibold">Files</h2>
       <Suspense fallback={<p>loading...</p>}>
         <div class="flex w-full justify-between">
           <Tabs defaultValue="compose" class="w-full">

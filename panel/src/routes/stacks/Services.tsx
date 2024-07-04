@@ -15,7 +15,6 @@ export default function ServicesComp() {
 
   return (
     <>
-      <h2 class="text-2xl font-semibold">Services</h2>
       <Suspense
         fallback={
           <div class="flex h-28 animate-pulse flex-col gap-2 rounded bg-secondary p-4">
