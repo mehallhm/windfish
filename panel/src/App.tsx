@@ -106,9 +106,7 @@ const App: Component<AppProps> = (props: AppProps) => {
 
           <ConnectionBadge socketState={socketState} />
         </aside>
-        <div class="flex w-full flex-col overflow-y-auto p-8">
-          {props.children}
-        </div>
+        {props.children}
       </div>
     </div>
   );

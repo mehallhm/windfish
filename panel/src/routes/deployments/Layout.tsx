@@ -13,7 +13,7 @@ export default function Layout(props: Props) {
   const location = useLocation();
 
   return (
-    <div class="w-full space-y-4 p-8">
+    <div class="flex h-screen w-full flex-col space-y-4 p-8">
       <h2 class="text-2xl font-semibold">{params.project}</h2>
       <div class="flex justify-between">
         <Tabs

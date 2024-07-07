@@ -23,6 +23,7 @@ func (m *Manager) ContainerLogs(id string) (io.ReadCloser, error) {
 		ShowStderr: true,
 		Timestamps: true,
 		Follow:     true,
+		Tail:       "100",
 	})
 	if err != nil {
 		return nil, err
