@@ -14,8 +14,8 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-const Index = lazy(() => import("./routes/index"));
-
+const Index = lazy(() => import("./routes/Home"));
+const Layout = lazy(() => import("./routes/Layout"));
 const Containers = lazy(() => import("./routes/Containers"));
 const Deployments = lazy(() => import("./routes/Deployments"));
 const Networks = lazy(() => import("./routes/Networks"));
@@ -34,12 +34,13 @@ const NewStack = lazy(() => import("./routes/NewStack"));
 render(
   () => (
     <Router root={App}>
-      <Route path="/" component={Index} />
-
-      <Route path="/containers" component={Containers} />
-      <Route path="/deployments" component={Deployments} />
-      <Route path="/networks" component={Networks} />
-      <Route path="/volumes" component={Volumes} />
+      <Route path="/" component={Layout}>
+        <Route path="/" component={Index} />
+        <Route path="/containers" component={Containers} />
+        <Route path="/deployments" component={Deployments} />
+        <Route path="/networks" component={Networks} />
+        <Route path="/volumes" component={Volumes} />
+      </Route>
 
       <Route path="/deployments/:project" component={StackLayout}>
         <Route path="/" component={Project} />

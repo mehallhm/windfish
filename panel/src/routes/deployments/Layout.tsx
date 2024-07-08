@@ -1,7 +1,6 @@
 import { JSX, createMemo } from "solid-js";
 import { A, useLocation, useParams } from "@solidjs/router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/Tabs";
-import Console from "./Console";
 import PowerButton from "~/components/PowerButton";
 
 interface Props {
@@ -13,7 +12,7 @@ export default function Layout(props: Props) {
   const location = useLocation();
 
   return (
-    <div class="flex h-screen w-full flex-col space-y-4 p-8">
+    <div class="flex h-screen w-full flex-col space-y-4">
       <h2 class="text-2xl font-semibold">{params.project}</h2>
       <div class="flex justify-between">
         <Tabs

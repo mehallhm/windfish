@@ -2,7 +2,7 @@ import { A } from "@solidjs/router";
 
 export default function Logo() {
   return (
-    <A class="mb-4 flex items-center gap-1" href="/">
+    <A class="flex items-center gap-1" href="/">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
