@@ -36,13 +36,13 @@ export default function LogsPage() {
     <>
       <div
         id="logsContainer"
-        class="flex flex-col overflow-y-scroll rounded"
+        class="flex flex-col overflow-y-scroll rounded font-jetbrains_mono"
         ref={(e) => (ref = e)}
       >
         <For each={logs()}>
           {(item) => (
             <div class="rounded p-1 text-sm odd:bg-muted">
-              <p>{item}</p>
+              <p class="font-medium">{item}</p>
             </div>
           )}
         </For>

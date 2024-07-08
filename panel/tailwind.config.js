@@ -13,6 +13,7 @@ module.exports = {
     extend: {
       fontFamily: {
         rubik: ["Rubik", "sans-serif"],
+        jetbrains_mono: ["Jetbrains Mono", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
