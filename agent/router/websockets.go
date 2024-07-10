@@ -59,9 +59,12 @@ func registerWebsockets(app *fiber.App, workspace *stacks.Workspace, manager *ma
 	ws.Get("/stats/:project", websocket.New(func(c *websocket.Conn) {
 		project := c.Params("project")
 		ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
 
-		_ = project
+		c.SetCloseHandler(func(code int, text string) error {
+			cancel()
+			slog.Debug("closing connection")
+			return nil
+		})
 
 		go func(c *websocket.Conn) {
 			var (
@@ -71,45 +74,40 @@ func registerWebsockets(app *fiber.App, workspace *stacks.Workspace, manager *ma
 			)
 
 			for {
-				if mt, msg, err = c.ReadMessage(); err != nil {
-					log.Println("read error:", err)
-					break
+				select {
+				case <-ctx.Done():
+					slog.Debug("reader stopped")
+					return
+				default:
+					if mt, msg, err = c.ReadMessage(); err != nil {
+						// BUG: Ignore websocket close 1005 error (expected)
+						slog.Error("read error while streaming logs", "error", err, "msg", msg)
+					}
+					log.Printf("recv: %s with mt %d", msg, mt)
 				}
-				log.Printf("recv: %s with mt %d", msg, mt)
 			}
-			fmt.Println("reader stopped")
 		}(c)
 
-		stats, err := workspace.DockerClient.ContainerStats(ctx, "bb2-busybox-1", true)
+		logs, err := manager.ComposeStats(ctx, project)
 		if err != nil {
-			panic(err)
+			slog.Error("error while getting compose logs", "error", err)
+			cancel()
+			slog.Debug("closing connection")
+			c.Close()
 		}
-		defer stats.Body.Close()
 
-		scanner := bufio.NewScanner(stats.Body)
-		for scanner.Scan() {
-			line := scanner.Bytes()
-
-			var statsJSON moby.StatsJSON
-			err = json.Unmarshal(line, &statsJSON)
+		for log := range logs {
+			err := c.WriteJSON(&fiber.Map{
+				"stack": project,
+				"log":   log,
+			})
 			if err != nil {
-				fmt.Println("json err: ", err)
-				return
-			}
-
-			cpuDelta := float64(statsJSON.CPUStats.CPUUsage.TotalUsage) - float64(statsJSON.PreCPUStats.CPUUsage.TotalUsage)
-			systemDelta := float64(statsJSON.CPUStats.SystemUsage) - float64(statsJSON.PreCPUStats.SystemUsage)
-			numberOfCores := float64(statsJSON.CPUStats.OnlineCPUs)
-
-			cpuPercent := (cpuDelta / systemDelta) * numberOfCores * 100.0
-			fmt.Printf("CPU usage: %.2f%%\n", cpuPercent)
-
-			err = c.WriteJSON(statsJSON)
-			if err != nil {
-				fmt.Println("websocket err: ", err)
-				return
+				slog.Error("error write logs", "error", err)
 			}
 		}
+
+		slog.Debug("closing connection")
+		cancel()
 
 	}))
 

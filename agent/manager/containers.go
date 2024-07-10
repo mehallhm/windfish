@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"context"
 	"io"
 
 	"github.com/docker/docker/api/types"
@@ -32,8 +33,8 @@ func (m *Manager) ContainerLogs(id string) (io.ReadCloser, error) {
 }
 
 // ContainerStats returns an io.ReadCloser with the realtime stats - it is up to the caller to close the stream
-func (m *Manager) ContainerStats(id string) (io.ReadCloser, error) {
-	stats, err := m.Cli.ContainerStats(m.ctx, id, true)
+func (m *Manager) ContainerStats(ctx context.Context, id string) (io.ReadCloser, error) {
+	stats, err := m.Cli.ContainerStats(ctx, id, true)
 	if err != nil {
 		return nil, err
 	}
