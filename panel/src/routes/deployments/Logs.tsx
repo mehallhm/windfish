@@ -28,6 +28,8 @@ export default function LogsPage() {
     }
   };
 
+  socket.onclose = () => console.log("closed");
+
   onCleanup(() => {
     socket.close();
   });

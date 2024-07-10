@@ -12,7 +12,7 @@ import (
 	"github.com/mehallhm/panamax/stacks"
 )
 
-const stacksPath = "/Users/micha/Source/panamax/test-stacks/"
+const stacksPath = "/Users/micha/Source/yadmp/test-stacks/"
 const humanReadable = true
 
 func main() {
