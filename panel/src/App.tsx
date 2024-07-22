@@ -4,13 +4,9 @@ import ConnectionBadge from "./components/ConnectionBadge";
 import Logo from "./components/Logo";
 import Sidebar from "./components/sidebar/Sidebar";
 
-interface AppProps {
-  children?: JSX.Element;
-}
-
 type WSState = "CONNECTING" | "OPEN" | "CLOSING" | "CLOSED";
 
-const App: Component<AppProps> = (props: AppProps) => {
+const App = (props: { children?: JSX.Element }) => {
   const params = useParams();
 
   const [socketState, setSocketState] = createSignal<WSState>("CONNECTING");
@@ -38,7 +34,7 @@ const App: Component<AppProps> = (props: AppProps) => {
       {/* <ConnectionBadge socketState={socketState} /> */}
       <Sidebar />
       <div class="flex w-full flex-col">
-        <div class="flex h-full px-4">{props.children}</div>
+        <div class="flex h-full">{props.children}</div>
       </div>
     </div>
   );

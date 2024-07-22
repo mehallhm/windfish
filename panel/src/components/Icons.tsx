@@ -1,5 +1,6 @@
 interface IconProps {
   class: string;
+  stroke?: string;
 }
 
 export function StackIcon(props: IconProps) {
@@ -11,7 +12,7 @@ export function StackIcon(props: IconProps) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="2"
+      stroke-width={props?.stroke ? props.stroke : "2"}
       stroke-linecap="round"
       stroke-linejoin="round"
       class={props.class}
@@ -33,7 +34,7 @@ export function NetworkIcon(props: IconProps) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="2"
+      stroke-width={props?.stroke ? props.stroke : "2"}
       stroke-linecap="round"
       stroke-linejoin="round"
       class={props.class}
@@ -60,7 +61,7 @@ export function DriveIcon(props: IconProps) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="2"
+      stroke-width={props?.stroke ? props.stroke : "2"}
       stroke-linecap="round"
       stroke-linejoin="round"
       class={props.class}

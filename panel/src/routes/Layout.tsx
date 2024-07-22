@@ -10,14 +10,5 @@ interface PageProps {
 export default function Page(props: PageProps) {
   const location = useLocation();
 
-  return (
-    <div class="flex w-full flex-col space-y-4">
-      <div class="flex h-full w-32 flex-col">
-        <SidebarEntry href="/deployments/a/services">
-          <p>A</p>
-        </SidebarEntry>
-      </div>
-      {props.children}
-    </div>
-  );
+  return <div class="flex w-full flex-col space-y-4">{props.children}</div>;
 }
