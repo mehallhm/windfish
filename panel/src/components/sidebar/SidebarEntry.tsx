@@ -18,8 +18,8 @@ export default function SidebarEntry(props: {
   return (
     <A
       class={cn(SidebarEntryClasses[props?.varient ?? "default"], props.class)}
-      inactiveClass="text-slate-700 hover:text-slate-900"
-      activeClass="bg-slate-100 font-medium text-slate-900"
+      inactiveClass="text-muted-foreground hover:text-foreground"
+      activeClass="bg-muted font-medium text-foreground"
       href={props.href}
       end={props?.end}
     >

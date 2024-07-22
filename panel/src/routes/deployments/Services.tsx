@@ -18,9 +18,9 @@ export default function ServicesComp() {
       <Suspense
         fallback={
           <div class="flex h-28 animate-pulse flex-col gap-2 rounded bg-secondary p-4">
-            <span class="h-6 w-32 rounded-full bg-neutral-200"></span>
-            <span class="h-4 w-64 rounded-full bg-neutral-200"></span>
-            <span class="h-4 w-48 rounded-full bg-neutral-200"></span>
+            <span class="h-6 w-32 rounded-full bg-muted-foreground"></span>
+            <span class="h-4 w-64 rounded-full bg-muted-foreground"></span>
+            <span class="h-4 w-48 rounded-full bg-muted-foreground"></span>
           </div>
         }
       >
