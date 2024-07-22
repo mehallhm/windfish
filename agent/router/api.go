@@ -9,7 +9,7 @@ import (
 func registerApi(app *fiber.App, workspace *stacks.Workspace, m *manager.Manager) *fiber.App {
 	api := app.Group("/api")
 
-	api = registerLogEndpoints(api, workspace)
+	// api = registerLogEndpoints(api, workspace)
 
 	// Returns the cached statuses for all projects
 	api.Get("status", func(c *fiber.Ctx) error {
@@ -63,13 +63,13 @@ func registerApi(app *fiber.App, workspace *stacks.Workspace, m *manager.Manager
 
 	// HACK: Unrestricted write is probably a bad idea. Maybe try some server validation first?
 	api.Post(":project/compose", func(c *fiber.Ctx) error {
-		project := c.Params("project")
-		compose := c.Body()
-
-		err := stacks.UpdateStack(project, workspace.Path, compose)
-		if err != nil {
-			return err
-		}
+		// project := c.Params("project")
+		// compose := c.Body()
+		//
+		// err := stacks.UpdateStack(project, workspace.Path, compose)
+		// if err != nil {
+		// 	return err
+		// }
 
 		return nil
 	})

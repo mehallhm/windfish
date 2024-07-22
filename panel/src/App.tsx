@@ -2,6 +2,7 @@ import { Component, JSX, createSignal } from "solid-js";
 import { A, useParams } from "@solidjs/router";
 import ConnectionBadge from "./components/ConnectionBadge";
 import Logo from "./components/Logo";
+import Sidebar from "./components/sidebar/Sidebar";
 
 interface AppProps {
   children?: JSX.Element;
@@ -33,12 +34,12 @@ const App: Component<AppProps> = (props: AppProps) => {
   setWsocket(socket);
 
   return (
-    <div class="flex h-screen w-full flex-col font-rubik">
-      <div class="flex items-center justify-between px-4 py-2">
-        <Logo />
-        <ConnectionBadge socketState={socketState} />
+    <div class="flex h-screen w-full font-rubik">
+      {/* <ConnectionBadge socketState={socketState} /> */}
+      <Sidebar />
+      <div class="flex w-full flex-col">
+        <div class="flex h-full px-4">{props.children}</div>
       </div>
-      <div class="flex h-full px-4">{props.children}</div>
     </div>
   );
 };

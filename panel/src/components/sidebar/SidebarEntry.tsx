@@ -5,6 +5,7 @@ interface SidebarEntryProps {
   href: string;
   varient?: "default" | "primary";
   children: JSX.Element;
+  end?: boolean;
 }
 
 const SidebarEntryClasses = {
@@ -19,8 +20,9 @@ export default function SidebarEntry(props: SidebarEntryProps) {
     <A
       class={SidebarEntryClasses[props?.varient ?? "default"]}
       inactiveClass=""
-      activeClass="bg-accent"
+      activeClass="bg-accent font-medium"
       href={props.href}
+      end={props?.end}
     >
       {props.children}
     </A>

@@ -1,14 +1,11 @@
 package router
 
 import (
-	"bufio"
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"log/slog"
 
-	moby "github.com/docker/docker/api/types"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/mehallhm/panamax/events"
