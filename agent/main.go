@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/lmittmann/tint"
 	"github.com/mehallhm/panamax/manager"
 	"github.com/mehallhm/panamax/router"
@@ -46,8 +47,12 @@ func main() {
 	slog.Debug("Finished creating workspace")
 
 	slog.Debug("Registering routes...")
-	app := router.Setup("*", "*")
-	app = router.Register(app, workspace, manager)
+	app := router.RegisterRoutes(manager, workspace, &router.Config{
+		Cors: cors.Config{
+			AllowOrigins: "*",
+			AllowHeaders: "*",
+		},
+	})
 	slog.Debug("Finished registering routes")
 
 	slog.Debug("Listening...")

@@ -3,14 +3,12 @@ package manager
 import (
 	"bufio"
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log/slog"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"sync"
 
 	"github.com/compose-spec/compose-go/v2/cli"
 	"github.com/compose-spec/compose-go/v2/types"
@@ -19,6 +17,7 @@ import (
 	"github.com/docker/docker/api/types/filters"
 )
 
+// Lists all compose stacks
 func (m *Manager) ComposeList(ctx context.Context) ([]string, error) {
 	entries, err := os.ReadDir(m.Path)
 	if err != nil {
@@ -73,6 +72,10 @@ func (m *Manager) ComposeContainerList(ctx context.Context, projectId string) ([
 	return containersByLabel[projectId], nil
 }
 
+func (m *Manager) ComposeStatus(ctx context.Context, projectId string) (string, error) {
+	return "", nil
+}
+
 // ComposeSpec returns the compose specification
 func (m *Manager) ComposeSpec(project string) (*types.Project, error) {
 	stackpath := filepath.Join(m.Path, project, "compose.yaml")
@@ -104,130 +107,46 @@ func ComposeStop(ctx context.Context) error {
 	return nil
 }
 
-func ComposeUp(ctx context.Context) error {
-	return nil
-}
-
-func ComposeDown(ctx context.Context) error {
-	return nil
-}
-
-func (m *Manager) ComposeStats(ctx context.Context, project string) (<-chan float64, error) {
-	mobyContainers, err := m.ComposeContainerList(ctx, project)
+func (m *Manager) ComposeUp(ctx context.Context, project string) ([]string, error) {
+	out, err := m.streamingComposeCommand(ctx, project, "compose", "up", "-d")
 	if err != nil {
 		return nil, err
 	}
 
-	containerNames := make([]string, len(mobyContainers))
-	for _, container := range mobyContainers {
-		containerNames = append(containerNames, container.Names[0])
+	messages := make([]string, 10)
+	for m := range out {
+		messages = append(messages, string(m))
 	}
 
-	if len(containerNames) == 0 {
-		return nil, fmt.Errorf("no active containers found")
-	}
-
-	stats := make(chan float64)
-	var wg sync.WaitGroup
-
-	for _, container := range containerNames {
-		wg.Add(1)
-		go func(container string) {
-			defer wg.Done()
-
-			rawLogs, err := m.ContainerStats(ctx, container)
-			if err != nil {
-				slog.Error("error getting container logs", "container", container, "error", err)
-				return
-			}
-			defer rawLogs.Close()
-
-			scanner := bufio.NewScanner(rawLogs)
-			scanner.Split(bufio.ScanLines)
-			for scanner.Scan() {
-				select {
-				case <-ctx.Done():
-					slog.Debug("done")
-					return
-				default:
-					m := scanner.Bytes()
-
-					var statsJSON moby.StatsJSON
-					err = json.Unmarshal(m, &statsJSON)
-					if err != nil {
-						fmt.Println("json err: ", err)
-						return
-					}
-					cpuDelta := float64(statsJSON.CPUStats.CPUUsage.TotalUsage) - float64(statsJSON.PreCPUStats.CPUUsage.TotalUsage)
-					systemDelta := float64(statsJSON.CPUStats.SystemUsage) - float64(statsJSON.PreCPUStats.SystemUsage)
-					numberOfCores := float64(statsJSON.CPUStats.OnlineCPUs)
-
-					cpuPercent := (cpuDelta / systemDelta) * numberOfCores * 100.0
-					stats <- cpuPercent
-				}
-			}
-		}(container)
-	}
-
-	go func() {
-		wg.Wait()
-		close(stats)
-	}()
-
-	return stats, nil
+	return messages, nil
 }
 
-func (m *Manager) ComposeLogs(ctx context.Context, project string) (<-chan []byte, error) {
-	mobyContainers, err := m.ComposeContainerList(ctx, project)
+func (m *Manager) ComposeDown(ctx context.Context, project string) ([]string, error) {
+	out, err := m.streamingComposeCommand(ctx, project, "compose", "down")
 	if err != nil {
 		return nil, err
 	}
 
-	containerNames := make([]string, len(mobyContainers))
-	for _, container := range mobyContainers {
-		containerNames = append(containerNames, container.Names[0])
+	messages := make([]string, 10)
+	for m := range out {
+		messages = append(messages, string(m))
 	}
 
-	if len(containerNames) == 0 {
-		return nil, fmt.Errorf("no active containers found")
+	return messages, nil
+}
+
+func (m *Manager) ComposeRestart(ctx context.Context, projectId string) ([]string, error) {
+	out, err := m.streamingComposeCommand(ctx, projectId, "compose", "restart")
+	if err != nil {
+		return nil, err
 	}
 
-	logs := make(chan []byte)
-	var wg sync.WaitGroup
-
-	for _, container := range containerNames {
-		wg.Add(1)
-		go func(container string) {
-			defer wg.Done()
-
-			l, err := m.ContainerLogs(container)
-			if err != nil {
-				slog.Error("error getting container logs", "container", container, "error", err)
-				return
-			}
-			defer l.Close()
-
-			scanner := bufio.NewScanner(l)
-			scanner.Split(bufio.ScanLines)
-			for scanner.Scan() {
-				select {
-				case <-ctx.Done():
-					slog.Debug("done")
-					return
-				default:
-					m := scanner.Text()
-					logs <- []byte(m)
-				}
-			}
-		}(container)
+	messages := make([]string, 10)
+	for m := range out {
+		messages = append(messages, string(m))
 	}
 
-	go func() {
-		wg.Wait()
-		close(logs)
-	}()
-
-	return logs, nil
+	return messages, nil
 }
 
 func (m *Manager) streamingComposeCommand(ctx context.Context, project string, args ...string) (<-chan []byte, error) {

@@ -6,11 +6,7 @@ import {
 } from "~/components/ui/Dropdown";
 import { Button } from "~/components/ui/Button";
 
-interface PowerButtonProps {
-  project: string;
-}
-
-export default function PowerButton(props: PowerButtonProps) {
+export default function PowerButton(props: { project: string }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -36,7 +32,7 @@ export default function PowerButton(props: PowerButtonProps) {
       <DropdownMenuContent>
         <DropdownMenuItem
           onClick={() =>
-            fetch("http://localhost:3000/api/" + props.project + "/start", {
+            fetch("http://localhost:3000/api/" + props.project + "/up", {
               method: "POST",
             })
           }
@@ -44,15 +40,23 @@ export default function PowerButton(props: PowerButtonProps) {
           Start
         </DropdownMenuItem>
         <DropdownMenuItem>Restart</DropdownMenuItem>
-        <DropdownMenuItem>Update</DropdownMenuItem>
         <DropdownMenuItem
           onClick={() =>
-            fetch("http://localhost:3000/api/" + props.project + "/stop", {
+            fetch("http://localhost:3000/api/" + props.project + "/down", {
               method: "POST",
             })
           }
         >
           Stop
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() =>
+            fetch("http://localhost:3000/api/" + props.project + "/down", {
+              method: "POST",
+            })
+          }
+        >
+          Stop & Cleanup
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

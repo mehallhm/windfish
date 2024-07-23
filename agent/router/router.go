@@ -10,14 +10,15 @@ import (
 	"github.com/mehallhm/panamax/stacks"
 )
 
-func Setup(allowedOrigins string, allowedHeaders string) *fiber.App {
+type Config struct {
+	Cors cors.Config
+}
+
+func RegisterRoutes(manager *manager.Manager, workspace *stacks.Workspace, config *Config) *fiber.App {
 	app := fiber.New()
 	app.Use(logger.New())
 
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: allowedOrigins,
-		AllowHeaders: allowedHeaders,
-	}))
+	app.Use(cors.New(config.Cors))
 
 	app.Use("/ws", func(c *fiber.Ctx) error {
 		if websocket.IsWebSocketUpgrade(c) {
@@ -27,14 +28,11 @@ func Setup(allowedOrigins string, allowedHeaders string) *fiber.App {
 		return fiber.ErrUpgradeRequired
 	})
 
-	return app
-}
+	api := app.Group("/api")
 
-func Register(app *fiber.App, workspace *stacks.Workspace, manager *manager.Manager) *fiber.App {
-	app = registerApi(app, workspace, manager)
-	app = registerWebsockets(app, workspace, manager)
-
-	app = registerPanel(app)
+	registerStackEndpoints(api, workspace, manager)
+	registerApi(api, workspace, manager)
+	registerWebsockets(app, workspace, manager)
 
 	return app
 }

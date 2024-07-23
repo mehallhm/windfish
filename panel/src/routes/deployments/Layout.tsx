@@ -57,12 +57,6 @@ export default function Layout(props: Props) {
           </ComboboxControl>
           <ComboboxContent />
         </Combobox>
-        {/* TODO: actually make this work :) */}
-        <span class="mt-2 flex items-center gap-1">
-          <span class="absolute h-2 w-2 animate-ping rounded-full bg-green-200"></span>
-          <span class="absolute h-2 w-2 rounded-full bg-green-200"></span>
-          <p class="px-4 text-sm tracking-wide text-zinc-500">Connected</p>
-        </span>
         <Separator class="my-2" />
         <p class="px-1 py-2 text-sm tracking-wide text-zinc-500">TITLE</p>
         <SidebarEntry href={"/deployments/" + params.project} end={true}>
@@ -84,8 +78,10 @@ export default function Layout(props: Props) {
         </SidebarEntry>
       </nav>
       <div class="flex w-full flex-col space-y-4 p-4">
-        <div class="flex justify-between">
-          <h2 class="text-2xl font-semibold">{params.project}</h2>
+        <div class="flex items-center justify-between">
+          <h2 class="font-jetbrains_mono text-3xl font-semibold">
+            {params.project}
+          </h2>
           <PowerButton project={params.project} />
         </div>
         {props?.children}

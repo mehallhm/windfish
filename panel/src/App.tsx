@@ -1,8 +1,7 @@
 import { Component, JSX, createSignal } from "solid-js";
 import { A, useParams } from "@solidjs/router";
 import ConnectionBadge from "./components/ConnectionBadge";
-import Logo from "./components/Logo";
-import Sidebar from "./components/sidebar/Sidebar";
+import PrimarySidebar from "./components/PrimarySidebar";
 
 type WSState = "CONNECTING" | "OPEN" | "CLOSING" | "CLOSED";
 
@@ -32,7 +31,7 @@ const App = (props: { children?: JSX.Element }) => {
   return (
     <div class="flex h-screen w-full font-rubik">
       {/* <ConnectionBadge socketState={socketState} /> */}
-      <Sidebar />
+      <PrimarySidebar />
       <div class="flex w-full flex-col">
         <div class="flex h-full">{props.children}</div>
       </div>
