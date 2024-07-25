@@ -3,7 +3,6 @@ package manager
 import (
 	"bufio"
 	"context"
-	"fmt"
 	"io"
 	"log/slog"
 	"os"
@@ -57,10 +56,7 @@ func (m *Manager) ComposeContainerList(ctx context.Context, projectId string) ([
 	containersByLabel := map[string][]moby.Container{}
 
 	for _, c := range containerList {
-		label, ok := c.Labels["com.docker.compose.project"]
-		if !ok {
-			return nil, fmt.Errorf("No labels set on container %q of project", c.ID)
-		}
+		label := c.Labels["com.docker.compose.project"]
 		labelContainers, ok := containersByLabel[label]
 		if !ok {
 			labelContainers = []moby.Container{}
@@ -70,10 +66,6 @@ func (m *Manager) ComposeContainerList(ctx context.Context, projectId string) ([
 	}
 
 	return containersByLabel[projectId], nil
-}
-
-func (m *Manager) ComposeStatus(ctx context.Context, projectId string) (string, error) {
-	return "", nil
 }
 
 // ComposeSpec returns the compose specification
@@ -97,6 +89,26 @@ func (m *Manager) ComposeSpec(project string) (*types.Project, error) {
 	}
 
 	return composeProject, nil
+}
+
+func (m *Manager) ComposeStatus(ctx context.Context, projectId string) (string, error) {
+	containers, err := m.ComposeContainerList(ctx, projectId)
+	if err != nil {
+		return "", err
+	}
+
+	if len(containers) == 0 {
+		return "down", nil
+	}
+
+	spec, err := m.ComposeSpec(projectId)
+	if err != nil {
+		return "", err
+	}
+
+	_ = spec
+
+	return "", nil
 }
 
 func ComposeStart(ctx context.Context) error {

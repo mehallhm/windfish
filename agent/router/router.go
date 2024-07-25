@@ -15,7 +15,9 @@ type Config struct {
 }
 
 func RegisterRoutes(manager *manager.Manager, workspace *stacks.Workspace, config *Config) *fiber.App {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		DisableStartupMessage: true,
+	})
 	app.Use(logger.New())
 
 	app.Use(cors.New(config.Cors))

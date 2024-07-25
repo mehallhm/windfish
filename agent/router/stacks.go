@@ -11,7 +11,6 @@ import (
 func registerStackEndpoints(api fiber.Router, workspace *stacks.Workspace, manager *manager.Manager) {
 	stackGroup := api.Group("/:project")
 
-	// Returns the cached status for a project
 	stackGroup.Get("status", func(c *fiber.Ctx) error {
 		project := c.Params("project")
 
@@ -24,6 +23,21 @@ func registerStackEndpoints(api fiber.Router, workspace *stacks.Workspace, manag
 		}
 
 		return c.JSON(status)
+	})
+
+	// TODO: Implement current statuses for the services
+	stackGroup.Get("details", func(c *fiber.Ctx) error {
+		project := c.Params("project")
+
+		spec, err := manager.ComposeSpec(project)
+		if err != nil {
+			return &fiber.Error{
+				Code:    500,
+				Message: "Error reading compose spec",
+			}
+		}
+
+		return c.JSON(spec)
 	})
 
 	stackGroup.Get("compose", func(c *fiber.Ctx) error {
@@ -60,6 +74,9 @@ func registerStackEndpoints(api fiber.Router, workspace *stacks.Workspace, manag
 		return nil
 	})
 
+	// Get the current services and their status
+	//
+	// Deprecated: Only contains service information, use /api/:project/details moving forward
 	stackGroup.Get("services", func(c *fiber.Ctx) error {
 		project := c.Params("project")
 
