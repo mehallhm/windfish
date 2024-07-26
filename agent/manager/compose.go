@@ -106,7 +106,17 @@ func (m *Manager) ComposeStatus(ctx context.Context, projectId string) (string, 
 		return "", err
 	}
 
-	_ = spec
+	runningContainers := make([]*moby.Container, len(containers))
+	for _, container := range containers {
+		if container.State == "running" {
+			runningContainers = append(runningContainers, &container)
+		}
+
+	}
+
+	if len(spec.Services) != len(runningContainers) {
+		return "exited", nil
+	}
 
 	return "", nil
 }
