@@ -2,6 +2,14 @@ import { useParams } from "@solidjs/router";
 import { Show, createSignal, onCleanup } from "solid-js";
 import { For } from "solid-js";
 import { Button } from "~/components/ui/Button";
+import { Separator } from "~/components/ui/Separator";
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/Accordion";
 
 export default function LogsPage() {
   const params = useParams<{ project: string }>();
@@ -36,6 +44,23 @@ export default function LogsPage() {
 
   return (
     <>
+      <Accordion collapsible defaultValue={["filter"]}>
+        <AccordionItem value="filter">
+          <AccordionTrigger class="pt-0 font-jetbrains_mono tracking-wide text-muted-foreground hover:no-underline">
+            FILTERS
+          </AccordionTrigger>
+          <AccordionContent class="">
+            <div class="flex gap-2">None yet :\</div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
+      <h2 class="pt-2 font-jetbrains_mono tracking-wide text-muted-foreground">
+        LOGS
+      </h2>
+      <Show when={logs().length == 0}>
+        <p>No logs</p>
+      </Show>
       <div
         id="logsContainer"
         class="flex flex-col overflow-y-scroll rounded font-jetbrains_mono"

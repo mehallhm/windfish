@@ -28,9 +28,7 @@ export default function Layout(props: Props) {
   return (
     <div class="flex w-full">
       <nav class="flex h-full w-52 flex-col gap-1 border-r p-2">
-        <p class="px-1 py-2 text-sm tracking-wide text-muted-foreground">
-          DEPLOYMENT
-        </p>
+        <p class="px-1 py-2 tracking-wide text-muted-foreground">DEPLOYMENT</p>
         <Combobox
           options={["bb2", "bb3", "bb8", "busy-box"]}
           defaultValue={params.project}
@@ -58,7 +56,7 @@ export default function Layout(props: Props) {
           <ComboboxContent />
         </Combobox>
         <Separator class="my-2" />
-        <p class="px-1 py-2 text-sm tracking-wide text-zinc-500">TITLE</p>
+        <p class="px-1 py-2 tracking-wide text-muted-foreground">TOOLS</p>
         <SidebarEntry href={"/deployments/" + params.project} end={true}>
           <p>Home</p>
         </SidebarEntry>
@@ -71,17 +69,23 @@ export default function Layout(props: Props) {
         <SidebarEntry href={"/deployments/" + params.project + "/logs"}>
           <p>Logs</p>
         </SidebarEntry>
-        <Separator class="my-2" />
-        <p class="px-1 py-2 text-sm tracking-wide text-zinc-500">TITLE</p>
-        <SidebarEntry href={"/deployments/" + params.project + "/logs"}>
-          <p>Logs</p>
-        </SidebarEntry>
       </nav>
-      <div class="flex w-full flex-col space-y-4 p-4">
-        <div class="flex items-center justify-between">
-          <h2 class="font-jetbrains_mono text-3xl font-semibold">
-            {params.project}
-          </h2>
+      <div class="flex w-full flex-col space-y-2 p-4">
+        <div class="flex items-center justify-between pb-2">
+          <div class="flex items-center gap-4">
+            <h2 class="font-jetbrains_mono text-3xl font-semibold">
+              {params.project}
+            </h2>
+            <span class="rounded-md bg-error p-2 text-xs text-error-foreground">
+              STATUS
+            </span>
+            <span class="rounded-md bg-success p-2 text-xs text-success-foreground">
+              STATUS
+            </span>
+            <span class="rounded-md bg-muted p-2 text-xs text-muted-foreground">
+              STATUS
+            </span>
+          </div>
           <PowerButton project={params.project} />
         </div>
         {props?.children}
