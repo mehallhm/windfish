@@ -3,7 +3,7 @@ import { A } from "@solidjs/router";
 import { cn } from "~/lib/cn";
 
 const SidebarEntryClasses = {
-  default: "group flex items-center justify-between rounded px-1 py-0.5",
+  default: "group flex items-center gap-1 rounded px-1 py-0.5",
   primary:
     "group flex items-center justify-between rounded px-1 py-0.5 hover:bg-primary hover:text-primary-foreground text-sm",
 };

@@ -15,6 +15,7 @@ import {
   ComboboxSection,
   ComboboxTrigger,
 } from "~/components/ui/Combobox";
+import { BinocularsIcon, BracesIcon, LogsIcon } from "~/components/Icons";
 
 interface Props {
   children?: JSX.Element;
@@ -58,24 +59,25 @@ export default function Layout(props: Props) {
         <Separator class="my-2" />
         <p class="px-1 py-2 tracking-wide text-muted-foreground">TOOLS</p>
         <SidebarEntry href={"/deployments/" + params.project} end={true}>
-          <p>Home</p>
+          <BinocularsIcon class="h-5 w-5" />
+          <p>Overview</p>
         </SidebarEntry>
         <SidebarEntry href={"/deployments/" + params.project + "/services"}>
+          <BracesIcon class="h-5 w-5" />
           <p>Services</p>
         </SidebarEntry>
-        <SidebarEntry href={"/deployments/" + params.project + "/editor"}>
-          <p>Editor</p>
-        </SidebarEntry>
+        {/* <SidebarEntry href={"/deployments/" + params.project + "/editor"}> */}
+        {/*   <p>Editor</p> */}
+        {/* </SidebarEntry> */}
         <SidebarEntry href={"/deployments/" + params.project + "/logs"}>
+          <LogsIcon class="h-5 w-5" />
           <p>Logs</p>
         </SidebarEntry>
       </nav>
       <div class="flex w-full flex-col space-y-2 p-4">
         <div class="flex items-center justify-between pb-2">
           <div class="flex items-center gap-4">
-            <h2 class="font-jetbrains_mono text-3xl font-semibold">
-              {params.project}
-            </h2>
+            <h2 class="text-3xl font-semibold">{params.project}</h2>
             <span class="rounded-md bg-error p-2 text-xs text-error-foreground">
               STATUS
             </span>

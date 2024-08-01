@@ -101,3 +101,45 @@ export function FishIcon(props: IconProps) {
     </IconWrapper>
   );
 }
+
+export function LogsIcon(props: IconProps) {
+  return (
+    <IconWrapper {...props}>
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M4 12h.01" />
+      <path d="M4 6h.01" />
+      <path d="M4 18h.01" />
+      <path d="M8 18h2" />
+      <path d="M8 12h2" />
+      <path d="M8 6h2" />
+      <path d="M14 6h6" />
+      <path d="M14 12h6" />
+      <path d="M14 18h6" />
+    </IconWrapper>
+  );
+}
+
+export function BracesIcon(props: IconProps) {
+  return (
+    <IconWrapper {...props}>
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M7 4a2 2 0 0 0 -2 2v3a2 3 0 0 1 -2 3a2 3 0 0 1 2 3v3a2 2 0 0 0 2 2" />
+      <path d="M17 4a2 2 0 0 1 2 2v3a2 3 0 0 0 2 3a2 3 0 0 0 -2 3v3a2 2 0 0 1 -2 2" />
+    </IconWrapper>
+  );
+}
+
+export function BinocularsIcon(props: IconProps) {
+  return (
+    <IconWrapper {...props}>
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M7 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+      <path d="M17 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+      <path d="M16.346 9.17l-.729 -1.261c-.16 -.248 -1.056 -.203 -1.117 .091l-.177 1.38" />
+      <path d="M19.761 14.813l-2.84 -5.133c-.189 -.31 -.592 -.68 -1.421 -.68c-.828 0 -1.5 .448 -1.5 1v6" />
+      <path d="M7.654 9.17l.729 -1.261c.16 -.249 1.056 -.203 1.117 .091l.177 1.38" />
+      <path d="M4.239 14.813l2.84 -5.133c.189 -.31 .592 -.68 1.421 -.68c.828 0 1.5 .448 1.5 1v6" />
+      <rect width="4" height="2" x="10" y="12" />
+    </IconWrapper>
+  );
+}
