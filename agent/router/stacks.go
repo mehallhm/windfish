@@ -13,12 +13,12 @@ func registerStackEndpoints(api fiber.Router, workspace *stacks.Workspace, manag
 
 	stackGroup.Get("status", func(c *fiber.Ctx) error {
 		project := c.Params("project")
-
-		status, ok := workspace.Stacks[project]
-		if !ok {
+		ctx := context.Background()
+		status, err := manager.ComposeStatus(ctx, project)
+		if err != nil {
 			return &fiber.Error{
 				Code:    500,
-				Message: "Project not found",
+				Message: "unable to retreive status",
 			}
 		}
 

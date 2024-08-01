@@ -24,7 +24,7 @@ const Volumes = lazy(() => import("./routes/Volumes"));
 const StackLayout = lazy(() => import("./routes/deployments/Layout"));
 
 const Project = lazy(() => import("./routes/deployments/Project"));
-const Services = lazy(() => import("./routes/deployments/Services"));
+const Services = lazy(() => import("./routes/deployments/Details"));
 const Editor = lazy(() => import("./routes/deployments/Editor"));
 const Console = lazy(() => import("./routes/deployments/Console"));
 const Logs = lazy(() => import("./routes/deployments/Logs"));
@@ -44,7 +44,7 @@ render(
 
       <Route path="/deployments/:project" component={StackLayout}>
         <Route path="/" component={Project} />
-        <Route path="/services" component={Services} />
+        <Route path="/details" component={Services} />
         <Route path="/editor" component={Editor} />
         <Route path="/console" component={Console} />
         <Route path="/logs" component={Logs} />

@@ -106,7 +106,7 @@ func (m *Manager) ComposeStatus(ctx context.Context, projectId string) (string, 
 		return "", err
 	}
 
-	runningContainers := make([]*moby.Container, len(containers))
+	runningContainers := make([]*moby.Container, 0)
 	for _, container := range containers {
 		if container.State == "running" {
 			runningContainers = append(runningContainers, &container)
@@ -118,7 +118,7 @@ func (m *Manager) ComposeStatus(ctx context.Context, projectId string) (string, 
 		return "exited", nil
 	}
 
-	return "", nil
+	return "running", nil
 }
 
 func ComposeStart(ctx context.Context) error {

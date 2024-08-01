@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "~/components/ui/Accordion";
+import { Separator } from "~/components/ui/Separator";
 
 async function getCompose(project: string) {
   const res = await fetch(
