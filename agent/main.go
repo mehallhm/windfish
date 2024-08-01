@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"flag"
+	"fmt"
 	"log/slog"
 	"os"
 	"time"
@@ -14,10 +16,39 @@ import (
 )
 
 const stacksPath = "/Users/micha/Source/windfish/test-stacks/"
-const humanReadable = true
+const version = "v0.0.1-alpha.1"
+
+type Opts struct {
+	port    uint
+	verbose bool
+}
+
+func parseOpts() Opts {
+	opts := Opts{}
+
+	flag.UintVar(&opts.port, "port", 3000, "The port to listen on")
+	flag.BoolVar(&opts.verbose, "verbose", false, "Print all message levels")
+
+	flag.UintVar(&opts.port, "p", 3000, "The port to listen on")
+	flag.BoolVar(&opts.verbose, "v", false, "Print all message levels")
+
+	versionBool := flag.Bool("V", false, "Display the current agent version")
+
+	flag.Parse()
+
+	if *versionBool {
+		fmt.Printf("Agent version %s\n", version)
+		os.Exit(0)
+	}
+
+	return opts
+}
 
 func main() {
-	if humanReadable {
+	opts := parseOpts()
+
+	slog.SetLogLoggerLevel(slog.LevelInfo)
+	if opts.verbose {
 		slog.SetDefault(slog.New(
 			tint.NewHandler(os.Stdout, &tint.Options{
 				Level:      slog.LevelDebug,
@@ -26,7 +57,7 @@ func main() {
 		))
 	}
 
-	slog.Info("Panamax agent started")
+	slog.Info("Windfish agent started")
 
 	slog.Debug("creating manager")
 	ctx := context.Background()
@@ -56,7 +87,7 @@ func main() {
 	slog.Debug("Finished registering routes")
 
 	slog.Debug("Listening...")
-	err = app.Listen(":3000")
+	err = app.Listen(fmt.Sprintf(":%v", opts.port))
 	if err != nil {
 		slog.Error("Webserver error", "error", err)
 		panic(err)
