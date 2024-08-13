@@ -28,6 +28,7 @@ const Services = lazy(() => import("./routes/deployments/Details"));
 const Editor = lazy(() => import("./routes/deployments/Editor"));
 const Console = lazy(() => import("./routes/deployments/Console"));
 const Logs = lazy(() => import("./routes/deployments/Logs"));
+const Usage = lazy(() => import("./routes/deployments/Usage"));
 
 const NewStack = lazy(() => import("./routes/NewStack"));
 
@@ -48,6 +49,7 @@ render(
         <Route path="/editor" component={Editor} />
         <Route path="/console" component={Console} />
         <Route path="/logs" component={Logs} />
+        <Route path="/usage" component={Usage} />
       </Route>
 
       <Route path="/new/stack" component={NewStack} />

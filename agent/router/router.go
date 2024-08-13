@@ -32,7 +32,7 @@ func RegisterRoutes(manager *manager.Manager, workspace *stacks.Workspace, confi
 
 	api := app.Group("/api")
 
-	registerStackEndpoints(api, workspace, manager)
+	registerStackEndpoints(api, manager)
 	registerApi(api, workspace, manager)
 	registerWebsockets(app, workspace, manager)
 

@@ -78,7 +78,7 @@ func registerWebsockets(app *fiber.App, workspace *stacks.Workspace, manager *ma
 				default:
 					if mt, msg, err = c.ReadMessage(); err != nil {
 						// BUG: Ignore websocket close 1005 error (expected)
-						slog.Error("read error while streaming logs", "error", err, "msg", msg)
+						slog.Error("read error while streaming stats", "error", err, "msg", msg)
 					}
 					log.Printf("recv: %s with mt %d", msg, mt)
 				}
@@ -87,19 +87,20 @@ func registerWebsockets(app *fiber.App, workspace *stacks.Workspace, manager *ma
 
 		logs, err := manager.ComposeStats(ctx, project)
 		if err != nil {
-			slog.Error("error while getting compose logs", "error", err)
+			slog.Error("error while getting compose stats", "error", err)
 			cancel()
 			slog.Debug("closing connection")
 			c.Close()
 		}
 
 		for log := range logs {
+			slog.Debug("writing stats")
 			err := c.WriteJSON(&fiber.Map{
 				"stack": project,
 				"log":   log,
 			})
 			if err != nil {
-				slog.Error("error write logs", "error", err)
+				slog.Error("error write stats", "error", err)
 			}
 		}
 

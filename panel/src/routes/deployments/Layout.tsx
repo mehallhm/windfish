@@ -3,7 +3,6 @@ import { A, useLocation, useNavigate, useParams } from "@solidjs/router";
 import PowerButton from "~/components/PowerButton";
 import SidebarEntry from "~/components/sidebar/SidebarEntry";
 import { Separator } from "~/components/ui/Separator";
-import { DropdownMenu } from "~/components/ui/Dropdown";
 import {
   Combobox,
   ComboboxInput,
@@ -12,10 +11,14 @@ import {
   ComboboxItem,
   ComboboxItemIndicator,
   ComboboxItemLabel,
-  ComboboxSection,
   ComboboxTrigger,
 } from "~/components/ui/Combobox";
-import { BinocularsIcon, BracesIcon, LogsIcon } from "~/components/Icons";
+import {
+  BinocularsIcon,
+  BracesIcon,
+  GaugeIcon,
+  LogsIcon,
+} from "~/components/Icons";
 
 interface Props {
   children?: JSX.Element;
@@ -75,6 +78,10 @@ export default function Layout(props: Props) {
           <BracesIcon class="h-5 w-5" />
           <p>Details</p>
         </SidebarEntry>
+        {/* <SidebarEntry href={"/deployments/" + params.project + "/usage"}> */}
+        {/*   <GaugeIcon class="h-5 w-5" /> */}
+        {/*   <p>Usage</p> */}
+        {/* </SidebarEntry> */}
         {/* <SidebarEntry href={"/deployments/" + params.project + "/editor"}> */}
         {/*   <p>Editor</p> */}
         {/* </SidebarEntry> */}
@@ -83,7 +90,7 @@ export default function Layout(props: Props) {
           <p>Logs</p>
         </SidebarEntry>
       </nav>
-      <div class="flex h-screen w-full flex-col space-y-2 p-4">
+      <div class="flex w-full flex-col space-y-2 p-4">
         <header class="flex items-center justify-between pb-2">
           <div class="flex items-center gap-4">
             <h2 class="text-3xl font-semibold">{params.project}</h2>
